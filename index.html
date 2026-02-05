@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day Family Budget Tracker</title>
+  <meta name="theme-color" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Day Budget">
+  <link rel="manifest" href="/Day_budget/manifest.json">
+  <link rel="apple-touch-icon" href="/Day_budget/icons/icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/Day_budget/icons/icon-192x192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { background: #111827; }
+    .glass { background: rgba(31, 41, 55, 0.8); backdrop-filter: blur(10px); }
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .tab-active { background: #3b82f6; color: white; }
+    .progress-bar { transition: width 0.5s ease-in-out; }
+  </style>
+</head>
+<body class="min-h-screen text-gray-100 p-4 md:p-6">
+  <div id="app" class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-white mb-2">💰 Day Family Budget Tracker</h1>
+      <p class="text-gray-400">Craig & Judith • Cherry Hill, NJ • $300k HELOC Renovation</p>
+      <p class="text-xs text-gray-500 mt-1">Data saves to this device • Install as app from your browser menu</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      <button onclick="showTab('dashboard')" id="tab-dashboard" class="tab-active px-4 py-2 rounded-lg font-medium transition-all">Dashboard</button>
+      <button onclick="showTab('renovation')" id="tab-renovation" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Renovation</button>
+      <button onclick="showTab('debts')" id="tab-debts" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Debts</button>
+      <button onclick="showTab('expenses')" id="tab-expenses" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Expenses</button>
+      <button onclick="showTab('goals')" id="tab-goals" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Goals</button>
+      <button onclick="showTab('settings')" id="tab-settings" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">⚙️</button>
+    </div>
+
+    <!-- Dashboard Tab -->
+    <div id="content-dashboard" class="tab-content">
+      <!-- Top Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="glass rounded-xl p-4 border border-gray-700">
+          <div class="text-gray-400 text-sm mb-1">💵 Monthly Income</div>
+          <div class="text-2xl font-bold text-green-400" id="stat-income">$0</div>
+          <div class="text-xs text-gray-500 mt-1" id="stat-income-breakdown"></div>
+        </div>
+        <div class="glass rounded-xl p-4 border border-gray-700">
+          <div class="text-gray-400 text-sm mb-1">📊 Monthly Surplus</div>
+          <div class="text-2xl font-bold" id="stat-surplus">$0</div>
+        </div>
+        <div class="glass rounded-xl p-4 border border-gray-700">
+          <div class="text-gray-400 text-sm mb-1">💳 Total Debt</div>
+          <div class="text-2xl font-bold text-orange-400" id="stat-debt">$0</div>
+        </div>
+        <div class="glass rounded-xl p-4 border border-gray-700">
+          <div class="text-gray-400 text-sm mb-1">🏦 Emergency Fund</div>
+          <div class="text-2xl font-bold text-blue-400" id="stat-emergency">$0</div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="glass rounded-xl p-5 border border-gray-700">
+          <h3 class="text-lg font-semibold mb-4">Monthly Cash Flow</h3>
+          <canvas id="cashFlowChart" height="200"></canvas>
+        </div>
+        <div class="glass rounded-xl p-5 border border-gray-700">
+          <h3 class="text-lg font-semibold mb-4">Renovation Progress</h3>
+          <canvas id="renovationChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">Quick Add Expense</h3>
+        <div class="flex flex-wrap gap-3">
+          <select id="quick-category" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+            <option value="Kitchen">Kitchen</option>
+            <option value="Bathrooms">Bathrooms</option>
+            <option value="Flooring">Flooring</option>
+            <option value="Windows/Doors">Windows/Doors</option>
+            <option value="HVAC">HVAC</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Plumbing">Plumbing</option>
+            <option value="Exterior">Exterior</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="number" id="quick-amount" placeholder="Amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 w-32">
+          <input type="text" id="quick-note" placeholder="Note (optional)" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1 min-w-[150px]">
+          <button onclick="addRenovationExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Renovation Tab -->
+    <div id="content-renovation" class="tab-content hidden">
+      <!-- HELOC Status -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🏠 HELOC Status</h3>
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-gray-400">Amount Drawn</span>
+            <span id="heloc-drawn-display">$0 / $300,000</span>
+          </div>
+          <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
+            <div id="heloc-progress" class="h-full bg-gradient-to-r from-blue-600 to-blue-400 progress-bar" style="width: 0%"></div>
+          </div>
+          <div class="flex justify-between text-xs text-gray-500 mt-1">
+            <span id="heloc-rate-display">Rate: TBD</span>
+            <span id="heloc-interest-display">Monthly Interest: $0</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <input type="number" id="heloc-draw-amount" placeholder="Draw amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
+          <button onclick="addHelocDraw()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">Draw Funds</button>
+        </div>
+      </div>
+
+      <!-- Renovation Budget by Category -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🔨 Renovation Budget</h3>
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-gray-400">Total Spent</span>
+            <span id="reno-total-display">$0 / $300,000</span>
+          </div>
+          <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
+            <div id="reno-progress" class="h-full bg-gradient-to-r from-green-600 to-emerald-400 progress-bar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div id="category-list" class="space-y-3"></div>
+      </div>
+
+      <!-- Recent Expenses -->
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">📝 Recent Renovation Expenses</h3>
+        <div id="expense-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <!-- Debts Tab -->
+    <div id="content-debts" class="tab-content hidden">
+      <!-- Credit Cards -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">💳 Credit Cards</h3>
+          <button onclick="showAddDebtModal()" class="bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-lg text-sm">+ Add Card</button>
+        </div>
+        <div id="credit-card-list" class="space-y-3"></div>
+        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+          <span class="text-gray-400">Total Credit Card Debt:</span>
+          <span class="text-xl font-bold text-orange-400" id="total-cc-debt">$0</span>
+        </div>
+      </div>
+
+      <!-- Student Loans -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🎓 Student Loans (Judith)</h3>
+        <div id="student-loan-list" class="space-y-3"></div>
+        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+          <span class="text-gray-400">Total Student Loans:</span>
+          <span class="text-xl font-bold text-purple-400" id="total-student-loans">$0</span>
+        </div>
+      </div>
+
+      <!-- Mortgage -->
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">🏡 Mortgage (Freedom Mortgage)</h3>
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div class="text-gray-400 text-sm">Monthly Payment</div>
+            <div class="text-xl font-bold" id="mortgage-payment">$2,532</div>
+          </div>
+          <div>
+            <div class="text-gray-400 text-sm">Balance</div>
+            <div class="text-xl font-bold" id="mortgage-balance">TBD</div>
+          </div>
+          <div>
+            <div class="text-gray-400 text-sm">Rate</div>
+            <div class="text-xl font-bold" id="mortgage-rate">TBD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expenses Tab -->
+    <div id="content-expenses" class="tab-content hidden">
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">📋 Monthly Fixed Expenses</h3>
+        <div id="fixed-expense-list" class="space-y-2"></div>
+        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+          <span class="text-gray-400">Total Fixed Expenses:</span>
+          <span class="text-xl font-bold" id="total-fixed-expenses">$0</span>
+        </div>
+      </div>
+
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">✏️ Edit Monthly Expense</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <select id="edit-expense-name" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+          </select>
+          <input type="number" id="edit-expense-amount" placeholder="New amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+          <button onclick="updateExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Update</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals Tab -->
+    <div id="content-goals" class="tab-content hidden">
+      <!-- Emergency Fund -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🏦 Emergency Fund Goal</h3>
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-gray-400">Progress</span>
+            <span id="emergency-progress-text">$0 / $25,000</span>
+          </div>
+          <div class="h-6 bg-gray-700 rounded-full overflow-hidden">
+            <div id="emergency-progress" class="h-full bg-gradient-to-r from-blue-600 to-cyan-400 progress-bar" style="width: 0%"></div>
+          </div>
+          <p class="text-xs text-gray-500 mt-2" id="emergency-eta"></p>
+        </div>
+        <div class="flex gap-3">
+          <input type="number" id="emergency-add" placeholder="Add to fund" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
+          <button onclick="addToEmergencyFund()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
+        </div>
+      </div>
+
+      <!-- Debt Payoff Goals -->
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">🎯 Debt Payoff Strategy</h3>
+        <div class="space-y-4">
+          <div class="bg-gray-750 rounded-lg p-4 border border-gray-600">
+            <h4 class="font-medium text-green-400 mb-2">Recommended: Avalanche Method</h4>
+            <p class="text-sm text-gray-400">Pay minimums on all debts, then put extra money toward the highest interest rate debt first. This saves the most money on interest.</p>
+          </div>
+          <div id="debt-priority-list" class="space-y-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="content-settings" class="tab-content hidden">
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">💵 Income Settings</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-gray-400 text-sm">Craig Net Monthly (Comcast)</label>
+            <input type="number" id="setting-craig-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">Judith Net Monthly (Signature Science)</label>
+            <input type="number" id="setting-judith-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">VA Benefits Monthly</label>
+            <input type="number" id="setting-va-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">Other Monthly Income</label>
+            <input type="number" id="setting-other-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+        </div>
+        <button onclick="saveIncomeSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save Income</button>
+      </div>
+
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🏠 HELOC Settings</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="text-gray-400 text-sm">Total Available</label>
+            <input type="number" id="setting-heloc-total" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">Interest Rate (%)</label>
+            <input type="number" step="0.01" id="setting-heloc-rate" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">Draw Period (years)</label>
+            <input type="number" id="setting-heloc-draw-period" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+        </div>
+        <button onclick="saveHelocSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save HELOC Settings</button>
+      </div>
+
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">🗑️ Data Management</h3>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="exportData()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">📥 Export Data</button>
+          <button onclick="document.getElementById('import-file').click()" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg font-medium">📤 Import Data</button>
+          <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
+          <button onclick="resetData()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg font-medium">🗑️ Reset All Data</button>
+        </div>
+        <p class="text-xs text-gray-500 mt-3">Export your data to share between devices or create a backup. Import to restore.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Button -->
+  <button onclick="toggleChat()" id="chat-toggle" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-500 rounded-full shadow-lg flex items-center justify-center transition-all z-40">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+  </button>
+
+  <!-- Chat Panel -->
+  <div id="chat-panel" class="fixed bottom-0 right-0 md:bottom-6 md:right-6 w-full md:w-96 h-[70vh] md:h-[500px] glass md:rounded-xl shadow-2xl border border-gray-700 flex-col z-50 hidden">
+    <!-- Chat Header -->
+    <div class="flex items-center justify-between p-4 border-b border-gray-700">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        </div>
+        <div>
+          <h3 class="font-semibold text-white">Budget Assistant</h3>
+          <p class="text-xs text-gray-400">Ask about your finances</p>
+        </div>
+      </div>
+      <button onclick="toggleChat()" class="text-gray-400 hover:text-white p-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <!-- Chat Messages -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <div class="flex gap-3">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        </div>
+        <div class="max-w-[80%] rounded-xl px-4 py-2 bg-gray-700 text-gray-100">
+          <p class="text-sm">Hi! I'm your budget assistant. Ask me things like:</p>
+          <ul class="text-sm text-gray-300 mt-2 space-y-1">
+            <li>• "What's our monthly surplus?"</li>
+            <li>• "How much have we spent on the kitchen?"</li>
+            <li>• "Can we afford a $5,000 expense?"</li>
+            <li>• "How long until we hit our emergency fund goal?"</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="p-4 border-t border-gray-700">
+      <div class="flex gap-2">
+        <input type="text" id="chat-input" onkeypress="handleChatKeypress(event)" placeholder="Ask about your budget..." class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
+        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Debt Modal -->
+  <div id="add-debt-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="glass rounded-xl p-6 border border-gray-700 w-full max-w-md mx-4">
+      <h3 class="text-lg font-semibold mb-4">Add Credit Card</h3>
+      <div class="space-y-3">
+        <input type="text" id="new-card-name" placeholder="Card name (e.g., Chase Sapphire)" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+        <input type="number" id="new-card-balance" placeholder="Current balance" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+        <input type="number" step="0.01" id="new-card-apr" placeholder="APR %" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+        <input type="number" id="new-card-minimum" placeholder="Minimum payment" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button onclick="hideAddDebtModal()" class="flex-1 bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-lg font-medium">Cancel</button>
+        <button onclick="addCreditCard()" class="flex-1 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Add Card</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== DATA STRUCTURE =====
+    const defaultData = {
+      income: {
+        craig: 8757,
+        judith: 5629,
+        va: 1663,
+        other: 0
+      },
+      heloc: {
+        total: 300000,
+        drawn: 0,
+        rate: 8.5,
+        drawPeriodYears: 10
+      },
+      renovation: {
+        budget: 300000,
+        categories: {
+          'Kitchen': { budget: 80000, spent: 0 },
+          'Bathrooms': { budget: 45000, spent: 0 },
+          'Flooring': { budget: 35000, spent: 0 },
+          'Windows/Doors': { budget: 25000, spent: 0 },
+          'HVAC': { budget: 20000, spent: 0 },
+          'Electrical': { budget: 15000, spent: 0 },
+          'Plumbing': { budget: 15000, spent: 0 },
+          'Exterior': { budget: 30000, spent: 0 },
+          'Other': { budget: 35000, spent: 0 }
+        },
+        expenses: []
+      },
+      creditCards: [],
+      studentLoans: [
+        { name: 'Federal Loan 1', balance: 0, rate: 0, payment: 561.49 },
+        { name: 'Federal Loan 2', balance: 0, rate: 0, payment: 153.23 }
+      ],
+      mortgage: {
+        payment: 2532,
+        balance: 0,
+        rate: 0
+      },
+      expenses: {
+        'Mortgage': 2532,
+        'Student Loan 1': 561,
+        'Student Loan 2': 153,
+        'PSE&G': 347,
+        'American Water': 160,
+        'USAA Insurance': 207,
+        'Xfinity': 61,
+        'Life Insurance': 63,
+        'Schwab Investment': 300,
+        'Cell Phones': 173
+      },
+      emergencyFund: {
+        current: 0,
+        target: 25000
+      },
+      lastUpdated: new Date().toISOString()
+    };
+
+    // Load or initialize data
+    let data = JSON.parse(JSON.stringify(defaultData));
+    let dataLoaded = false;
+
+    // Persistent storage helper
+    const STORAGE_KEY = 'dayFamilyBudget';
+
+    async function loadData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          data = JSON.parse(saved);
+        }
+      } catch (e) {
+        console.log('No saved data found, using defaults');
+      }
+      dataLoaded = true;
+      updateAll();
+    }
+
+    async function saveData() {
+      data.lastUpdated = new Date().toISOString();
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        console.error('Failed to save data:', e);
+      }
+    }
+
+    function formatCurrency(num) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+    }
+
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('[id^="tab-"]').forEach(el => {
+        el.classList.remove('tab-active');
+        el.classList.add('bg-gray-700');
+      });
+      document.getElementById('content-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-' + tabName).classList.add('tab-active');
+      document.getElementById('tab-' + tabName).classList.remove('bg-gray-700');
+    }
+
+    // ===== CALCULATIONS =====
+    function getTotalIncome() {
+      return data.income.craig + data.income.judith + data.income.va + data.income.other;
+    }
+
+    function getTotalExpenses() {
+      return Object.values(data.expenses).reduce((a, b) => a + b, 0);
+    }
+
+    function getCreditCardMinimums() {
+      return data.creditCards.reduce((a, c) => a + (c.minimum || 0), 0);
+    }
+
+    function getHelocInterest() {
+      return (data.heloc.drawn * (data.heloc.rate / 100)) / 12;
+    }
+
+    function getTotalObligations() {
+      return getTotalExpenses() + getCreditCardMinimums() + getHelocInterest();
+    }
+
+    function getMonthlySurplus() {
+      return getTotalIncome() - getTotalObligations();
+    }
+
+    function getTotalCreditCardDebt() {
+      return data.creditCards.reduce((a, c) => a + (c.balance || 0), 0);
+    }
+
+    function getTotalStudentLoans() {
+      return data.studentLoans.reduce((a, l) => a + (l.balance || 0), 0);
+    }
+
+    function getRenovationSpent() {
+      return Object.values(data.renovation.categories).reduce((a, c) => a + c.spent, 0);
+    }
+
+    // ===== UI UPDATES =====
+    function updateDashboard() {
+      const income = getTotalIncome();
+      const surplus = getMonthlySurplus();
+      const ccDebt = getTotalCreditCardDebt();
+      const slDebt = getTotalStudentLoans();
+
+      document.getElementById('stat-income').textContent = formatCurrency(income);
+      document.getElementById('stat-income-breakdown').textContent = 
+        `Craig: ${formatCurrency(data.income.craig)} • Judith: ${formatCurrency(data.income.judith)} • VA: ${formatCurrency(data.income.va)}`;
+      
+      const surplusEl = document.getElementById('stat-surplus');
+      surplusEl.textContent = formatCurrency(surplus);
+      surplusEl.className = surplus >= 0 ? 'text-2xl font-bold text-green-400' : 'text-2xl font-bold text-red-400';
+
+      document.getElementById('stat-debt').textContent = formatCurrency(ccDebt + slDebt + data.heloc.drawn);
+      document.getElementById('stat-emergency').textContent = formatCurrency(data.emergencyFund.current);
+
+      updateCharts();
+    }
+
+    function updateRenovationTab() {
+      const helocPct = (data.heloc.drawn / data.heloc.total) * 100;
+      document.getElementById('heloc-drawn-display').textContent = `${formatCurrency(data.heloc.drawn)} / ${formatCurrency(data.heloc.total)}`;
+      document.getElementById('heloc-progress').style.width = helocPct + '%';
+      document.getElementById('heloc-rate-display').textContent = `Rate: ${data.heloc.rate}%`;
+      document.getElementById('heloc-interest-display').textContent = `Monthly Interest: ${formatCurrency(getHelocInterest())}`;
+
+      const spent = getRenovationSpent();
+      const renoPct = (spent / data.renovation.budget) * 100;
+      document.getElementById('reno-total-display').textContent = `${formatCurrency(spent)} / ${formatCurrency(data.renovation.budget)}`;
+      document.getElementById('reno-progress').style.width = renoPct + '%';
+
+      const categoryList = document.getElementById('category-list');
+      categoryList.innerHTML = '';
+      for (const [name, cat] of Object.entries(data.renovation.categories)) {
+        const pct = cat.budget > 0 ? (cat.spent / cat.budget) * 100 : 0;
+        const color = pct > 100 ? 'bg-red-500' : pct > 80 ? 'bg-yellow-500' : 'bg-green-500';
+        categoryList.innerHTML += `
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span>${name}</span>
+              <span class="text-gray-400">${formatCurrency(cat.spent)} / ${formatCurrency(cat.budget)}</span>
+            </div>
+            <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div class="h-full ${color} progress-bar" style="width: ${Math.min(pct, 100)}%"></div>
+            </div>
+          </div>
+        `;
+      }
+
+      const expenseList = document.getElementById('expense-list');
+      expenseList.innerHTML = '';
+      const recentExpenses = [...data.renovation.expenses].reverse().slice(0, 20);
+      if (recentExpenses.length === 0) {
+        expenseList.innerHTML = '<p class="text-gray-500 text-sm">No expenses recorded yet</p>';
+      } else {
+        recentExpenses.forEach((exp, idx) => {
+          expenseList.innerHTML += `
+            <div class="flex justify-between items-center py-2 border-b border-gray-700">
+              <div>
+                <span class="font-medium">${exp.category}</span>
+                <span class="text-gray-500 text-sm ml-2">${exp.note || ''}</span>
+                <span class="text-gray-600 text-xs ml-2">${new Date(exp.date).toLocaleDateString()}</span>
+              </div>
+              <span class="text-green-400">${formatCurrency(exp.amount)}</span>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function updateDebtsTab() {
+      const ccList = document.getElementById('credit-card-list');
+      ccList.innerHTML = '';
+      if (data.creditCards.length === 0) {
+        ccList.innerHTML = '<p class="text-gray-500 text-sm">No credit cards added. Click "+ Add Card" to add one.</p>';
+      } else {
+        data.creditCards.forEach((card, idx) => {
+          ccList.innerHTML += `
+            <div class="bg-gray-750 rounded-lg p-3 border border-gray-600">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">${card.name}</span>
+                <span class="text-orange-400 font-bold">${formatCurrency(card.balance)}</span>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">
+                ${card.apr}% APR • Min: ${formatCurrency(card.minimum)} • 
+                <button onclick="removeCreditCard(${idx})" class="text-red-400 hover:text-red-300">Remove</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+      document.getElementById('total-cc-debt').textContent = formatCurrency(getTotalCreditCardDebt());
+
+      const slList = document.getElementById('student-loan-list');
+      slList.innerHTML = '';
+      data.studentLoans.forEach(loan => {
+        slList.innerHTML += `
+          <div class="bg-gray-750 rounded-lg p-3 border border-gray-600">
+            <div class="flex justify-between items-center">
+              <span class="font-medium">${loan.name}</span>
+              <span class="text-purple-400 font-bold">${loan.balance > 0 ? formatCurrency(loan.balance) : 'Balance TBD'}</span>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">
+              ${loan.rate > 0 ? loan.rate + '% APR • ' : ''}Payment: ${formatCurrency(loan.payment)}/mo
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('total-student-loans').textContent = formatCurrency(getTotalStudentLoans());
+
+      const priorityList = document.getElementById('debt-priority-list');
+      const allDebts = [
+        ...data.creditCards.map(c => ({ name: c.name, balance: c.balance, rate: c.apr, type: 'CC' })),
+        ...data.studentLoans.filter(l => l.balance > 0).map(l => ({ name: l.name, balance: l.balance, rate: l.rate, type: 'SL' }))
+      ].sort((a, b) => b.rate - a.rate);
+      
+      priorityList.innerHTML = '';
+      if (allDebts.length === 0) {
+        priorityList.innerHTML = '<p class="text-gray-500 text-sm">Add your debts to see a prioritized payoff order.</p>';
+      } else {
+        allDebts.forEach((debt, idx) => {
+          priorityList.innerHTML += `
+            <div class="flex justify-between items-center py-2 px-3 bg-gray-750 rounded-lg">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold">${idx + 1}</span>
+                <span>${debt.name}</span>
+              </div>
+              <div class="text-right">
+                <div class="font-bold">${formatCurrency(debt.balance)}</div>
+                <div class="text-xs text-gray-500">${debt.rate}% APR</div>
+              </div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function updateExpensesTab() {
+      const list = document.getElementById('fixed-expense-list');
+      list.innerHTML = '';
+      for (const [name, amount] of Object.entries(data.expenses)) {
+        list.innerHTML += `
+          <div class="flex justify-between items-center py-2 border-b border-gray-700">
+            <span>${name}</span>
+            <span class="font-medium">${formatCurrency(amount)}</span>
+          </div>
+        `;
+      }
+      document.getElementById('total-fixed-expenses').textContent = formatCurrency(getTotalExpenses());
+
+      const select = document.getElementById('edit-expense-name');
+      select.innerHTML = '';
+      for (const name of Object.keys(data.expenses)) {
+        select.innerHTML += `<option value="${name}">${name}</option>`;
+      }
+    }
+
+    function updateGoalsTab() {
+      const pct = (data.emergencyFund.current / data.emergencyFund.target) * 100;
+      document.getElementById('emergency-progress-text').textContent = 
+        `${formatCurrency(data.emergencyFund.current)} / ${formatCurrency(data.emergencyFund.target)}`;
+      document.getElementById('emergency-progress').style.width = Math.min(pct, 100) + '%';
+      
+      const surplus = getMonthlySurplus();
+      const remaining = data.emergencyFund.target - data.emergencyFund.current;
+      if (surplus > 0 && remaining > 0) {
+        const months = Math.ceil(remaining / surplus);
+        document.getElementById('emergency-eta').textContent = 
+          `At current surplus of ${formatCurrency(surplus)}/mo: ~${months} months to goal`;
+      } else if (remaining <= 0) {
+        document.getElementById('emergency-eta').textContent = '🎉 Goal reached!';
+      } else {
+        document.getElementById('emergency-eta').textContent = 'Increase surplus to make progress';
+      }
+    }
+
+    function updateSettingsTab() {
+      document.getElementById('setting-craig-income').value = data.income.craig;
+      document.getElementById('setting-judith-income').value = data.income.judith;
+      document.getElementById('setting-va-income').value = data.income.va;
+      document.getElementById('setting-other-income').value = data.income.other;
+      document.getElementById('setting-heloc-total').value = data.heloc.total;
+      document.getElementById('setting-heloc-rate').value = data.heloc.rate;
+      document.getElementById('setting-heloc-draw-period').value = data.heloc.drawPeriodYears;
+    }
+
+    let cashFlowChart, renovationChart;
+
+    function updateCharts() {
+      const income = getTotalIncome();
+      const expenses = getTotalObligations();
+      const surplus = income - expenses;
+
+      if (cashFlowChart) cashFlowChart.destroy();
+      cashFlowChart = new Chart(document.getElementById('cashFlowChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Income', 'Expenses', 'Surplus'],
+          datasets: [{
+            data: [income, expenses, surplus],
+            backgroundColor: ['#10b981', '#ef4444', surplus >= 0 ? '#3b82f6' : '#f59e0b']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { 
+              beginAtZero: true,
+              ticks: { color: '#9ca3af', callback: v => '$' + (v/1000) + 'k' },
+              grid: { color: '#374151' }
+            },
+            x: { ticks: { color: '#9ca3af' }, grid: { display: false } }
+          }
+        }
+      });
+
+      const spent = getRenovationSpent();
+      const remaining = data.renovation.budget - spent;
+      if (renovationChart) renovationChart.destroy();
+      renovationChart = new Chart(document.getElementById('renovationChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Spent', 'Remaining'],
+          datasets: [{
+            data: [spent, Math.max(0, remaining)],
+            backgroundColor: ['#10b981', '#374151']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#9ca3af' } }
+          }
+        }
+      });
+    }
+
+    // ===== ACTIONS =====
+    function addRenovationExpense() {
+      const category = document.getElementById('quick-category').value;
+      const amount = parseFloat(document.getElementById('quick-amount').value);
+      const note = document.getElementById('quick-note').value;
+
+      if (!amount || amount <= 0) return alert('Please enter a valid amount');
+
+      data.renovation.categories[category].spent += amount;
+      data.renovation.expenses.push({
+        category,
+        amount,
+        note,
+        date: new Date().toISOString()
+      });
+
+      saveData();
+      document.getElementById('quick-amount').value = '';
+      document.getElementById('quick-note').value = '';
+      updateAll();
+    }
+
+    function addHelocDraw() {
+      const amount = parseFloat(document.getElementById('heloc-draw-amount').value);
+      const remaining = data.heloc.total - data.heloc.drawn;
+
+      if (!amount || amount <= 0) return alert('Please enter a valid amount');
+      if (amount > remaining) return alert(`Only ${formatCurrency(remaining)} available to draw`);
+
+      data.heloc.drawn += amount;
+      saveData();
+      document.getElementById('heloc-draw-amount').value = '';
+      updateAll();
+    }
+
+    function showAddDebtModal() {
+      document.getElementById('add-debt-modal').classList.remove('hidden');
+      document.getElementById('add-debt-modal').classList.add('flex');
+    }
+
+    function hideAddDebtModal() {
+      document.getElementById('add-debt-modal').classList.add('hidden');
+      document.getElementById('add-debt-modal').classList.remove('flex');
+    }
+
+    function addCreditCard() {
+      const name = document.getElementById('new-card-name').value;
+      const balance = parseFloat(document.getElementById('new-card-balance').value) || 0;
+      const apr = parseFloat(document.getElementById('new-card-apr').value) || 0;
+      const minimum = parseFloat(document.getElementById('new-card-minimum').value) || 0;
+
+      if (!name) return alert('Please enter a card name');
+
+      data.creditCards.push({ name, balance, apr, minimum });
+      saveData();
+      hideAddDebtModal();
+      document.getElementById('new-card-name').value = '';
+      document.getElementById('new-card-balance').value = '';
+      document.getElementById('new-card-apr').value = '';
+      document.getElementById('new-card-minimum').value = '';
+      updateAll();
+    }
+
+    function removeCreditCard(idx) {
+      if (confirm('Remove this credit card?')) {
+        data.creditCards.splice(idx, 1);
+        saveData();
+        updateAll();
+      }
+    }
+
+    function updateExpense() {
+      const name = document.getElementById('edit-expense-name').value;
+      const amount = parseFloat(document.getElementById('edit-expense-amount').value);
+
+      if (!amount && amount !== 0) return alert('Please enter an amount');
+
+      data.expenses[name] = amount;
+      saveData();
+      document.getElementById('edit-expense-amount').value = '';
+      updateAll();
+    }
+
+    function addToEmergencyFund() {
+      const amount = parseFloat(document.getElementById('emergency-add').value);
+      if (!amount || amount <= 0) return alert('Please enter a valid amount');
+
+      data.emergencyFund.current += amount;
+      saveData();
+      document.getElementById('emergency-add').value = '';
+      updateAll();
+    }
+
+    function saveIncomeSettings() {
+      data.income.craig = parseFloat(document.getElementById('setting-craig-income').value) || 0;
+      data.income.judith = parseFloat(document.getElementById('setting-judith-income').value) || 0;
+      data.income.va = parseFloat(document.getElementById('setting-va-income').value) || 0;
+      data.income.other = parseFloat(document.getElementById('setting-other-income').value) || 0;
+      saveData();
+      updateAll();
+      alert('Income settings saved!');
+    }
+
+    function saveHelocSettings() {
+      data.heloc.total = parseFloat(document.getElementById('setting-heloc-total').value) || 300000;
+      data.heloc.rate = parseFloat(document.getElementById('setting-heloc-rate').value) || 0;
+      data.heloc.drawPeriodYears = parseFloat(document.getElementById('setting-heloc-draw-period').value) || 10;
+      saveData();
+      updateAll();
+      alert('HELOC settings saved!');
+    }
+
+    function exportData() {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'day-family-budget-' + new Date().toISOString().split('T')[0] + '.json';
+      a.click();
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          data = imported;
+          saveData();
+          updateAll();
+          alert('Data imported successfully!');
+        } catch (err) {
+          alert('Error importing data: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetData() {
+      if (confirm('Are you sure you want to reset ALL data? This cannot be undone.')) {
+        data = JSON.parse(JSON.stringify(defaultData));
+        saveData();
+        updateAll();
+        alert('Data has been reset.');
+      }
+    }
+
+    function updateAll() {
+      updateDashboard();
+      updateRenovationTab();
+      updateDebtsTab();
+      updateExpensesTab();
+      updateGoalsTab();
+      updateSettingsTab();
+    }
+
+    // Initialize - load from persistent storage
+    loadData();
+
+    // Register service worker for offline PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/Day_budget/sw.js')
+        .then(reg => console.log('SW registered:', reg.scope))
+        .catch(err => console.log('SW registration failed:', err));
+    }
+
+    // Handle PWA install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Show install banner
+      const banner = document.createElement('div');
+      banner.id = 'install-banner';
+      banner.className = 'fixed top-0 left-0 right-0 bg-blue-600 text-white px-4 py-3 flex items-center justify-between z-50';
+      banner.innerHTML = `
+        <span class="text-sm font-medium">📱 Install Day Budget as an app on your device!</span>
+        <div class="flex gap-2">
+          <button onclick="installPWA()" class="bg-white text-blue-600 px-3 py-1 rounded-lg text-sm font-bold">Install</button>
+          <button onclick="document.getElementById('install-banner').remove()" class="text-blue-200 hover:text-white px-2">✕</button>
+        </div>
+      `;
+      document.body.prepend(banner);
+    });
+
+    async function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('Install outcome:', outcome);
+      deferredPrompt = null;
+      const banner = document.getElementById('install-banner');
+      if (banner) banner.remove();
+    }
+
+    // ===== CHAT FUNCTIONALITY =====
+    function toggleChat() {
+      const panel = document.getElementById('chat-panel');
+      const toggle = document.getElementById('chat-toggle');
+      if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        panel.classList.add('flex');
+        toggle.classList.add('scale-0');
+        document.getElementById('chat-input').focus();
+      } else {
+        panel.classList.add('hidden');
+        panel.classList.remove('flex');
+        toggle.classList.remove('scale-0');
+      }
+    }
+
+    function handleChatKeypress(event) {
+      if (event.key === 'Enter') {
+        sendChatMessage();
+      }
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+      if (!message) return;
+
+      addChatMessage(message, 'user');
+      input.value = '';
+
+      setTimeout(() => {
+        const response = processQuestion(message);
+        addChatMessage(response, 'assistant');
+      }, 300);
+    }
+
+    function addChatMessage(text, role) {
+      const container = document.getElementById('chat-messages');
+      const isUser = role === 'user';
+      
+      const html = `
+        <div class="flex gap-3 ${isUser ? 'flex-row-reverse' : ''}">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isUser ? 'bg-green-600' : 'bg-blue-600'}">
+            ${isUser ? 
+              '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' : 
+              '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>'
+            }
+          </div>
+          <div class="max-w-[80%] rounded-xl px-4 py-2 ${isUser ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-100'}">
+            <p class="text-sm whitespace-pre-wrap">${text}</p>
+          </div>
+        </div>
+      `;
+      
+      container.insertAdjacentHTML('beforeend', html);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function processQuestion(question) {
+      const q = question.toLowerCase();
+      
+      const income = getTotalIncome();
+      const expenses = getTotalObligations();
+      const surplus = getMonthlySurplus();
+      const ccDebt = getTotalCreditCardDebt();
+      const slDebt = getTotalStudentLoans();
+      const totalDebt = ccDebt + slDebt + data.heloc.drawn;
+      const renoSpent = getRenovationSpent();
+      const renoRemaining = data.renovation.budget - renoSpent;
+      const helocRemaining = data.heloc.total - data.heloc.drawn;
+      const emergencyProgress = (data.emergencyFund.current / data.emergencyFund.target) * 100;
+      const monthsToEmergency = surplus > 0 ? Math.ceil((data.emergencyFund.target - data.emergencyFund.current) / surplus) : Infinity;
+
+      if (q.includes('income') || q.includes('make') || q.includes('earn')) {
+        return `Your combined monthly income is ${formatCurrency(income)}:\n\n• Craig (Comcast): ${formatCurrency(data.income.craig)}\n• Judith (Signature Science): ${formatCurrency(data.income.judith)}\n• VA Benefits: ${formatCurrency(data.income.va)}${data.income.other > 0 ? `\n• Other: ${formatCurrency(data.income.other)}` : ''}`;
+      }
+
+      if (q.includes('surplus') || q.includes('left over') || q.includes('leftover') || q.includes('extra')) {
+        if (surplus >= 0) {
+          return `Your monthly surplus is ${formatCurrency(surplus)}.\n\nThis is what's left after all expenses (${formatCurrency(expenses)}) are subtracted from your income (${formatCurrency(income)}).\n\nYou could use this for:\n• Extra debt payments\n• Building your emergency fund\n• Saving for the renovation`;
+        } else {
+          return `⚠️ You're currently running a deficit of ${formatCurrency(Math.abs(surplus))} per month.\n\nYour expenses (${formatCurrency(expenses)}) exceed your income (${formatCurrency(income)}).\n\nConsider reviewing your expenses or finding ways to increase income.`;
+        }
+      }
+
+      if (q.includes('afford') || q.includes('can we') || q.includes('can i')) {
+        const amountMatch = q.match(/\$?([\d,]+)/);
+        if (amountMatch) {
+          const amount = parseFloat(amountMatch[1].replace(',', ''));
+          if (amount <= surplus) {
+            return `Yes, you can afford ${formatCurrency(amount)}! It's within your monthly surplus of ${formatCurrency(surplus)}.\n\nThis would leave you with ${formatCurrency(surplus - amount)} remaining this month.`;
+          } else if (amount <= surplus * 3) {
+            const months = Math.ceil(amount / surplus);
+            return `${formatCurrency(amount)} is more than your monthly surplus of ${formatCurrency(surplus)}, but you could save for it in about ${months} months.\n\nAlternatively, you could draw from your HELOC (${formatCurrency(helocRemaining)} available) if it's renovation-related.`;
+          } else {
+            return `${formatCurrency(amount)} would be a stretch. Your monthly surplus is ${formatCurrency(surplus)}.\n\nOptions:\n• Save over ${Math.ceil(amount / surplus)} months\n• Draw from HELOC (${formatCurrency(helocRemaining)} available)\n• Consider financing`;
+          }
+        }
+        return `To check if you can afford something, include the amount in your question. For example: "Can we afford $5,000?"`;
+      }
+
+      if (q.includes('debt') || q.includes('owe')) {
+        let response = `Your total debt is ${formatCurrency(totalDebt)}:\n`;
+        if (ccDebt > 0) response += `\n• Credit Cards: ${formatCurrency(ccDebt)}`;
+        if (slDebt > 0) response += `\n• Student Loans: ${formatCurrency(slDebt)}`;
+        if (data.heloc.drawn > 0) response += `\n• HELOC Drawn: ${formatCurrency(data.heloc.drawn)}`;
+        if (data.mortgage.balance > 0) response += `\n• Mortgage: ${formatCurrency(data.mortgage.balance)} (not included in total above)`;
+        
+        if (ccDebt > 0 && surplus > 0) {
+          const ccMonths = Math.ceil(ccDebt / surplus);
+          response += `\n\nAt your current surplus, you could pay off credit cards in ~${ccMonths} months if you dedicated all extra funds to it.`;
+        }
+        return response;
+      }
+
+      if (q.includes('credit card') || q.includes('cards')) {
+        if (data.creditCards.length === 0) {
+          return `You haven't added any credit cards yet. Go to the Debts tab and click "+ Add Card" to track your credit cards.`;
+        }
+        let response = `You have ${data.creditCards.length} credit card(s) totaling ${formatCurrency(ccDebt)}:\n`;
+        data.creditCards.sort((a, b) => b.apr - a.apr).forEach(card => {
+          response += `\n• ${card.name}: ${formatCurrency(card.balance)} at ${card.apr}% APR`;
+        });
+        response += `\n\n💡 Pay the highest APR card first (avalanche method) to save the most on interest.`;
+        return response;
+      }
+
+      if (q.includes('renovation') || q.includes('spent') || q.includes('remodel')) {
+        let response = `Renovation Budget: ${formatCurrency(renoSpent)} spent of ${formatCurrency(data.renovation.budget)}\n\nRemaining: ${formatCurrency(renoRemaining)}\n\nBy category:`;
+        for (const [name, cat] of Object.entries(data.renovation.categories)) {
+          if (cat.spent > 0) {
+            response += `\n• ${name}: ${formatCurrency(cat.spent)} / ${formatCurrency(cat.budget)}`;
+          }
+        }
+        if (renoSpent === 0) {
+          response += `\n\nNo expenses recorded yet. Use the Quick Add on the Dashboard or go to the Renovation tab to log expenses.`;
+        }
+        return response;
+      }
+
+      const categories = ['kitchen', 'bathroom', 'flooring', 'hvac', 'electrical', 'plumbing', 'exterior', 'windows', 'doors'];
+      for (const cat of categories) {
+        if (q.includes(cat)) {
+          const catName = Object.keys(data.renovation.categories).find(k => k.toLowerCase().includes(cat));
+          if (catName) {
+            const c = data.renovation.categories[catName];
+            const pct = c.budget > 0 ? ((c.spent / c.budget) * 100).toFixed(1) : 0;
+            return `${catName} Budget:\n\n• Spent: ${formatCurrency(c.spent)}\n• Budget: ${formatCurrency(c.budget)}\n• Remaining: ${formatCurrency(c.budget - c.spent)}\n• Progress: ${pct}%`;
+          }
+        }
+      }
+
+      if (q.includes('heloc') || q.includes('loan') || q.includes('draw')) {
+        return `HELOC Status:\n\n• Total Available: ${formatCurrency(data.heloc.total)}\n• Amount Drawn: ${formatCurrency(data.heloc.drawn)}\n• Remaining to Draw: ${formatCurrency(helocRemaining)}\n• Interest Rate: ${data.heloc.rate}%\n• Monthly Interest: ${formatCurrency(getHelocInterest())}\n\nGo to the Renovation tab to draw funds.`;
+      }
+
+      if (q.includes('emergency') || q.includes('savings') || q.includes('fund')) {
+        let response = `Emergency Fund:\n\n• Current: ${formatCurrency(data.emergencyFund.current)}\n• Goal: ${formatCurrency(data.emergencyFund.target)}\n• Progress: ${emergencyProgress.toFixed(1)}%`;
+        if (monthsToEmergency !== Infinity && monthsToEmergency > 0) {
+          response += `\n\nAt your current surplus of ${formatCurrency(surplus)}/month, you'll reach your goal in approximately ${monthsToEmergency} months.`;
+        } else if (data.emergencyFund.current >= data.emergencyFund.target) {
+          response += `\n\n🎉 Congratulations! You've reached your emergency fund goal!`;
+        }
+        return response;
+      }
+
+      if (q.includes('expense') || q.includes('bills') || q.includes('pay')) {
+        let response = `Monthly Fixed Expenses: ${formatCurrency(getTotalExpenses())}\n`;
+        for (const [name, amount] of Object.entries(data.expenses)) {
+          response += `\n• ${name}: ${formatCurrency(amount)}`;
+        }
+        if (getCreditCardMinimums() > 0) {
+          response += `\n• CC Minimums: ${formatCurrency(getCreditCardMinimums())}`;
+        }
+        if (getHelocInterest() > 0) {
+          response += `\n• HELOC Interest: ${formatCurrency(getHelocInterest())}`;
+        }
+        return response;
+      }
+
+      if (q.includes('mortgage') || q.includes('house payment')) {
+        return `Mortgage (Freedom Mortgage):\n\n• Monthly Payment: ${formatCurrency(data.mortgage.payment)}\n• Balance: ${data.mortgage.balance > 0 ? formatCurrency(data.mortgage.balance) : 'Not entered yet'}\n• Rate: ${data.mortgage.rate > 0 ? data.mortgage.rate + '%' : 'Not entered yet'}`;
+      }
+
+      if (q.includes('student') || q.includes('loan')) {
+        let response = `Student Loans (Judith):\n`;
+        data.studentLoans.forEach(loan => {
+          response += `\n• ${loan.name}: ${loan.balance > 0 ? formatCurrency(loan.balance) : 'Balance TBD'} — ${formatCurrency(loan.payment)}/month`;
+        });
+        response += `\n\nTotal Monthly Payment: ${formatCurrency(data.studentLoans.reduce((a, l) => a + l.payment, 0))}`;
+        return response;
+      }
+
+      if (q.includes('summary') || q.includes('overview') || q.includes('status') || q.includes('how are we doing')) {
+        return `📊 Budget Summary:\n\n💵 Income: ${formatCurrency(income)}/month\n💸 Expenses: ${formatCurrency(expenses)}/month\n${surplus >= 0 ? '✅' : '⚠️'} Surplus: ${formatCurrency(surplus)}/month\n\n💳 Total Debt: ${formatCurrency(totalDebt)}\n🏠 HELOC Used: ${formatCurrency(data.heloc.drawn)} of ${formatCurrency(data.heloc.total)}\n🔨 Reno Spent: ${formatCurrency(renoSpent)} of ${formatCurrency(data.renovation.budget)}\n🏦 Emergency Fund: ${emergencyProgress.toFixed(0)}% of goal`;
+      }
+
+      if (q.includes('help') || q.includes('what can')) {
+        return `I can answer questions about:\n\n• Income & surplus\n• Debts (credit cards, student loans)\n• HELOC & renovation budget\n• Monthly expenses\n• Emergency fund progress\n• Affordability ("Can we afford $X?")\n\nTry asking:\n• "What's our monthly surplus?"\n• "How much have we spent on renovation?"\n• "Can we afford $10,000?"\n• "How are we doing?"`;
+      }
+
+      return `I'm not sure how to answer that. Try asking about:\n\n• Income or surplus\n• Debts or credit cards\n• Renovation spending\n• HELOC balance\n• Emergency fund\n• Monthly expenses\n• "Can we afford $X?"\n\nOr ask "help" to see more examples.`;
+    }
+  </script>
+</body>
+</html>
