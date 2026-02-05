@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -26,287 +27,331 @@
     <!-- Header -->
     <div class="mb-6">
       <h1 class="text-3xl font-bold text-white mb-2">💰 Day Family Budget Tracker</h1>
-      <p class="text-gray-400">Craig & Judith • Cherry Hill, NJ • $300k HELOC Renovation</p>
+      <p class="text-gray-400">Craig & Judith • Cherry Hill, NJ • $300k RenoFi HELOC Renovation</p>
       <p class="text-xs text-gray-500 mt-1">Data saves to this device • Install as app from your browser menu</p>
     </div>
 
-    <!-- Tabs -->
-    <div class="flex flex-wrap gap-2 mb-6">
-      <button onclick="showTab('dashboard')" id="tab-dashboard" class="tab-active px-4 py-2 rounded-lg font-medium transition-all">Dashboard</button>
-      <button onclick="showTab('renovation')" id="tab-renovation" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Renovation</button>
-      <button onclick="showTab('debts')" id="tab-debts" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Debts</button>
-      <button onclick="showTab('expenses')" id="tab-expenses" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Expenses</button>
-      <button onclick="showTab('goals')" id="tab-goals" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Goals</button>
-      <button onclick="showTab('settings')" id="tab-settings" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">⚙️</button>
+```
+<!-- Tabs -->
+<div class="flex flex-wrap gap-2 mb-6">
+  <button onclick="showTab('dashboard')" id="tab-dashboard" class="tab-active px-4 py-2 rounded-lg font-medium transition-all">Dashboard</button>
+  <button onclick="showTab('renovation')" id="tab-renovation" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Renovation</button>
+  <button onclick="showTab('debts')" id="tab-debts" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Debts</button>
+  <button onclick="showTab('expenses')" id="tab-expenses" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Expenses</button>
+  <button onclick="showTab('goals')" id="tab-goals" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Goals</button>
+  <button onclick="showTab('settings')" id="tab-settings" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">⚙️</button>
+</div>
+
+<!-- Dashboard Tab -->
+<div id="content-dashboard" class="tab-content">
+  <!-- Top Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="glass rounded-xl p-4 border border-gray-700">
+      <div class="text-gray-400 text-sm mb-1">💵 Monthly Income</div>
+      <div class="text-2xl font-bold text-green-400" id="stat-income">$0</div>
+      <div class="text-xs text-gray-500 mt-1" id="stat-income-breakdown"></div>
     </div>
-
-    <!-- Dashboard Tab -->
-    <div id="content-dashboard" class="tab-content">
-      <!-- Top Stats -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div class="glass rounded-xl p-4 border border-gray-700">
-          <div class="text-gray-400 text-sm mb-1">💵 Monthly Income</div>
-          <div class="text-2xl font-bold text-green-400" id="stat-income">$0</div>
-          <div class="text-xs text-gray-500 mt-1" id="stat-income-breakdown"></div>
-        </div>
-        <div class="glass rounded-xl p-4 border border-gray-700">
-          <div class="text-gray-400 text-sm mb-1">📊 Monthly Surplus</div>
-          <div class="text-2xl font-bold" id="stat-surplus">$0</div>
-        </div>
-        <div class="glass rounded-xl p-4 border border-gray-700">
-          <div class="text-gray-400 text-sm mb-1">💳 Total Debt</div>
-          <div class="text-2xl font-bold text-orange-400" id="stat-debt">$0</div>
-        </div>
-        <div class="glass rounded-xl p-4 border border-gray-700">
-          <div class="text-gray-400 text-sm mb-1">🏦 Emergency Fund</div>
-          <div class="text-2xl font-bold text-blue-400" id="stat-emergency">$0</div>
-        </div>
-      </div>
-
-      <!-- Charts Row -->
-      <div class="grid md:grid-cols-2 gap-6 mb-6">
-        <div class="glass rounded-xl p-5 border border-gray-700">
-          <h3 class="text-lg font-semibold mb-4">Monthly Cash Flow</h3>
-          <canvas id="cashFlowChart" height="200"></canvas>
-        </div>
-        <div class="glass rounded-xl p-5 border border-gray-700">
-          <h3 class="text-lg font-semibold mb-4">Renovation Progress</h3>
-          <canvas id="renovationChart" height="200"></canvas>
-        </div>
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="glass rounded-xl p-5 border border-gray-700">
-        <h3 class="text-lg font-semibold mb-4">Quick Add Expense</h3>
-        <div class="flex flex-wrap gap-3">
-          <select id="quick-category" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
-            <option value="Kitchen">Kitchen</option>
-            <option value="Bathrooms">Bathrooms</option>
-            <option value="Flooring">Flooring</option>
-            <option value="Windows/Doors">Windows/Doors</option>
-            <option value="HVAC">HVAC</option>
-            <option value="Electrical">Electrical</option>
-            <option value="Plumbing">Plumbing</option>
-            <option value="Exterior">Exterior</option>
-            <option value="Other">Other</option>
-          </select>
-          <input type="number" id="quick-amount" placeholder="Amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 w-32">
-          <input type="text" id="quick-note" placeholder="Note (optional)" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1 min-w-[150px]">
-          <button onclick="addRenovationExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
-        </div>
-      </div>
+    <div class="glass rounded-xl p-4 border border-gray-700">
+      <div class="text-gray-400 text-sm mb-1">📊 Monthly Surplus</div>
+      <div class="text-2xl font-bold" id="stat-surplus">$0</div>
     </div>
+    <div class="glass rounded-xl p-4 border border-gray-700">
+      <div class="text-gray-400 text-sm mb-1">💳 Total Debt</div>
+      <div class="text-2xl font-bold text-orange-400" id="stat-debt">$0</div>
+    </div>
+    <div class="glass rounded-xl p-4 border border-gray-700">
+      <div class="text-gray-400 text-sm mb-1">🏦 Emergency Fund</div>
+      <div class="text-2xl font-bold text-blue-400" id="stat-emergency">$0</div>
+    </div>
+  </div>
 
-    <!-- Renovation Tab -->
-    <div id="content-renovation" class="tab-content hidden">
-      <!-- HELOC Status -->
-      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-        <h3 class="text-lg font-semibold mb-4">🏠 HELOC Status</h3>
-        <div class="mb-4">
-          <div class="flex justify-between text-sm mb-2">
-            <span class="text-gray-400">Amount Drawn</span>
-            <span id="heloc-drawn-display">$0 / $300,000</span>
-          </div>
-          <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
-            <div id="heloc-progress" class="h-full bg-gradient-to-r from-blue-600 to-blue-400 progress-bar" style="width: 0%"></div>
-          </div>
-          <div class="flex justify-between text-xs text-gray-500 mt-1">
-            <span id="heloc-rate-display">Rate: TBD</span>
-            <span id="heloc-interest-display">Monthly Interest: $0</span>
-          </div>
-        </div>
-        <div class="flex gap-3">
-          <input type="number" id="heloc-draw-amount" placeholder="Draw amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
-          <button onclick="addHelocDraw()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">Draw Funds</button>
-        </div>
+  <!-- Charts Row -->
+  <div class="grid md:grid-cols-2 gap-6 mb-6">
+    <div class="glass rounded-xl p-5 border border-gray-700">
+      <h3 class="text-lg font-semibold mb-4">Monthly Cash Flow</h3>
+      <canvas id="cashFlowChart" height="200"></canvas>
+    </div>
+    <div class="glass rounded-xl p-5 border border-gray-700">
+      <h3 class="text-lg font-semibold mb-4">Renovation Progress</h3>
+      <canvas id="renovationChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="glass rounded-xl p-5 border border-gray-700">
+    <h3 class="text-lg font-semibold mb-4">Quick Add Expense</h3>
+    <div class="flex flex-wrap gap-3">
+      <select id="quick-category" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+        <option value="Kitchen">Kitchen</option>
+        <option value="Bathrooms">Bathrooms</option>
+        <option value="Flooring">Flooring</option>
+        <option value="Windows/Doors">Windows/Doors</option>
+        <option value="HVAC">HVAC</option>
+        <option value="Electrical">Electrical</option>
+        <option value="Plumbing">Plumbing</option>
+        <option value="Exterior">Exterior</option>
+        <option value="Other">Other</option>
+      </select>
+      <input type="number" id="quick-amount" placeholder="Amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 w-32">
+      <input type="text" id="quick-note" placeholder="Note (optional)" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1 min-w-[150px]">
+      <button onclick="addRenovationExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Renovation Tab -->
+<div id="content-renovation" class="tab-content hidden">
+  <!-- HELOC Status -->
+  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+    <div class="flex justify-between items-start mb-4">
+      <h3 class="text-lg font-semibold">🏠 HELOC Status</h3>
+      <span class="text-xs bg-yellow-600/30 text-yellow-300 px-2 py-1 rounded-full" id="heloc-status-badge">Pursuing</span>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-sm">
+      <div class="bg-gray-800/50 rounded-lg p-3">
+        <div class="text-gray-500 text-xs">Lender</div>
+        <div class="text-gray-200 font-medium" id="heloc-lender-display">RenoFi</div>
       </div>
-
-      <!-- Renovation Budget by Category -->
-      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-        <h3 class="text-lg font-semibold mb-4">🔨 Renovation Budget</h3>
-        <div class="mb-4">
-          <div class="flex justify-between text-sm mb-2">
-            <span class="text-gray-400">Total Spent</span>
-            <span id="reno-total-display">$0 / $300,000</span>
-          </div>
-          <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
-            <div id="reno-progress" class="h-full bg-gradient-to-r from-green-600 to-emerald-400 progress-bar" style="width: 0%"></div>
-          </div>
-        </div>
-        <div id="category-list" class="space-y-3"></div>
+      <div class="bg-gray-800/50 rounded-lg p-3">
+        <div class="text-gray-500 text-xs">Fixed Rate</div>
+        <div class="text-gray-200 font-medium" id="heloc-rate-display">7.625%</div>
       </div>
-
-      <!-- Recent Expenses -->
-      <div class="glass rounded-xl p-5 border border-gray-700">
-        <h3 class="text-lg font-semibold mb-4">📝 Recent Renovation Expenses</h3>
-        <div id="expense-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+      <div class="bg-gray-800/50 rounded-lg p-3">
+        <div class="text-gray-500 text-xs">Draw Period</div>
+        <div class="text-gray-200 font-medium" id="heloc-draw-period-display">2 years</div>
+      </div>
+      <div class="bg-gray-800/50 rounded-lg p-3">
+        <div class="text-gray-500 text-xs">Repayment</div>
+        <div class="text-gray-200 font-medium" id="heloc-repay-display">20 years</div>
       </div>
     </div>
-
-    <!-- Debts Tab -->
-    <div id="content-debts" class="tab-content hidden">
-      <!-- Credit Cards -->
-      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">💳 Credit Cards</h3>
-          <button onclick="showAddDebtModal()" class="bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-lg text-sm">+ Add Card</button>
-        </div>
-        <div id="credit-card-list" class="space-y-3"></div>
-        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
-          <span class="text-gray-400">Total Credit Card Debt:</span>
-          <span class="text-xl font-bold text-orange-400" id="total-cc-debt">$0</span>
-        </div>
+    <div class="mb-4">
+      <div class="flex justify-between text-sm mb-2">
+        <span class="text-gray-400">Amount Drawn</span>
+        <span id="heloc-drawn-display">$0 / $300,000</span>
       </div>
-
-      <!-- Student Loans -->
-      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-        <h3 class="text-lg font-semibold mb-4">🎓 Student Loans (Judith)</h3>
-        <div id="student-loan-list" class="space-y-3"></div>
-        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
-          <span class="text-gray-400">Total Student Loans:</span>
-          <span class="text-xl font-bold text-purple-400" id="total-student-loans">$0</span>
-        </div>
+      <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
+        <div id="heloc-progress" class="h-full bg-gradient-to-r from-blue-600 to-blue-400 progress-bar" style="width: 0%"></div>
       </div>
-
-      <!-- Mortgage -->
-      <div class="glass rounded-xl p-5 border border-gray-700">
-        <h3 class="text-lg font-semibold mb-4">🏡 Mortgage (Freedom Mortgage)</h3>
-        <div class="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div class="text-gray-400 text-sm">Monthly Payment</div>
-            <div class="text-xl font-bold" id="mortgage-payment">$2,532</div>
-          </div>
-          <div>
-            <div class="text-gray-400 text-sm">Balance</div>
-            <div class="text-xl font-bold" id="mortgage-balance">TBD</div>
-          </div>
-          <div>
-            <div class="text-gray-400 text-sm">Rate</div>
-            <div class="text-xl font-bold" id="mortgage-rate">TBD</div>
-          </div>
-        </div>
+      <div class="flex justify-between text-xs text-gray-500 mt-1">
+        <span id="heloc-monthly-payment-display">Est. Monthly Payment: $2,347.13 (at full draw)</span>
+        <span id="heloc-interest-display">Current Monthly Interest: $0</span>
       </div>
     </div>
+    <div class="flex gap-3">
+      <input type="number" id="heloc-draw-amount" placeholder="Draw amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
+      <button onclick="addHelocDraw()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">Draw Funds</button>
+    </div>
+  </div>
 
-    <!-- Expenses Tab -->
-    <div id="content-expenses" class="tab-content hidden">
-      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-        <h3 class="text-lg font-semibold mb-4">📋 Monthly Fixed Expenses</h3>
-        <div id="fixed-expense-list" class="space-y-2"></div>
-        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
-          <span class="text-gray-400">Total Fixed Expenses:</span>
-          <span class="text-xl font-bold" id="total-fixed-expenses">$0</span>
-        </div>
+  <!-- Renovation Budget by Category -->
+  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+    <h3 class="text-lg font-semibold mb-4">🔨 Renovation Budget</h3>
+    <div class="mb-4">
+      <div class="flex justify-between text-sm mb-2">
+        <span class="text-gray-400">Total Spent</span>
+        <span id="reno-total-display">$0 / $300,000</span>
       </div>
-
-      <div class="glass rounded-xl p-5 border border-gray-700">
-        <h3 class="text-lg font-semibold mb-4">✏️ Edit Monthly Expense</h3>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-          <select id="edit-expense-name" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
-          </select>
-          <input type="number" id="edit-expense-amount" placeholder="New amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
-          <button onclick="updateExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Update</button>
-        </div>
+      <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
+        <div id="reno-progress" class="h-full bg-gradient-to-r from-green-600 to-emerald-400 progress-bar" style="width: 0%"></div>
       </div>
     </div>
+    <div id="category-list" class="space-y-3"></div>
+  </div>
 
-    <!-- Goals Tab -->
-    <div id="content-goals" class="tab-content hidden">
-      <!-- Emergency Fund -->
-      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-        <h3 class="text-lg font-semibold mb-4">🏦 Emergency Fund Goal</h3>
-        <div class="mb-4">
-          <div class="flex justify-between text-sm mb-2">
-            <span class="text-gray-400">Progress</span>
-            <span id="emergency-progress-text">$0 / $25,000</span>
-          </div>
-          <div class="h-6 bg-gray-700 rounded-full overflow-hidden">
-            <div id="emergency-progress" class="h-full bg-gradient-to-r from-blue-600 to-cyan-400 progress-bar" style="width: 0%"></div>
-          </div>
-          <p class="text-xs text-gray-500 mt-2" id="emergency-eta"></p>
-        </div>
-        <div class="flex gap-3">
-          <input type="number" id="emergency-add" placeholder="Add to fund" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
-          <button onclick="addToEmergencyFund()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
-        </div>
-      </div>
+  <!-- Recent Expenses -->
+  <div class="glass rounded-xl p-5 border border-gray-700">
+    <h3 class="text-lg font-semibold mb-4">📝 Recent Renovation Expenses</h3>
+    <div id="expense-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+  </div>
+</div>
 
-      <!-- Debt Payoff Goals -->
-      <div class="glass rounded-xl p-5 border border-gray-700">
-        <h3 class="text-lg font-semibold mb-4">🎯 Debt Payoff Strategy</h3>
-        <div class="space-y-4">
-          <div class="bg-gray-750 rounded-lg p-4 border border-gray-600">
-            <h4 class="font-medium text-green-400 mb-2">Recommended: Avalanche Method</h4>
-            <p class="text-sm text-gray-400">Pay minimums on all debts, then put extra money toward the highest interest rate debt first. This saves the most money on interest.</p>
-          </div>
-          <div id="debt-priority-list" class="space-y-2"></div>
-        </div>
-      </div>
+<!-- Debts Tab -->
+<div id="content-debts" class="tab-content hidden">
+  <!-- Credit Cards -->
+  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold">💳 Credit Cards</h3>
+      <button onclick="showAddDebtModal()" class="bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-lg text-sm">+ Add Card</button>
     </div>
-
-    <!-- Settings Tab -->
-    <div id="content-settings" class="tab-content hidden">
-      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-        <h3 class="text-lg font-semibold mb-4">💵 Income Settings</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="text-gray-400 text-sm">Craig Net Monthly (Comcast)</label>
-            <input type="number" id="setting-craig-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-          </div>
-          <div>
-            <label class="text-gray-400 text-sm">Judith Net Monthly (Signature Science)</label>
-            <input type="number" id="setting-judith-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-          </div>
-          <div>
-            <label class="text-gray-400 text-sm">VA Benefits Monthly</label>
-            <input type="number" id="setting-va-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-          </div>
-          <div>
-            <label class="text-gray-400 text-sm">Other Monthly Income</label>
-            <input type="number" id="setting-other-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-          </div>
-        </div>
-        <button onclick="saveIncomeSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save Income</button>
+    <div id="credit-card-list" class="space-y-3"></div>
+    <div class="mt-4 pt-4 border-t border-gray-700 space-y-2">
+      <div class="flex justify-between">
+        <span class="text-gray-400">Total Credit Card Debt:</span>
+        <span class="text-xl font-bold text-orange-400" id="total-cc-debt">$0</span>
       </div>
-
-      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-        <h3 class="text-lg font-semibold mb-4">🏠 HELOC Settings</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="text-gray-400 text-sm">Total Available</label>
-            <input type="number" id="setting-heloc-total" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-          </div>
-          <div>
-            <label class="text-gray-400 text-sm">Interest Rate (%)</label>
-            <input type="number" step="0.01" id="setting-heloc-rate" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-          </div>
-          <div>
-            <label class="text-gray-400 text-sm">Draw Period (years)</label>
-            <input type="number" id="setting-heloc-draw-period" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-          </div>
-        </div>
-        <button onclick="saveHelocSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save HELOC Settings</button>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500">Combined Monthly Interest:</span>
+        <span class="text-red-400 font-medium" id="total-cc-interest">$0</span>
       </div>
-
-      <div class="glass rounded-xl p-5 border border-gray-700">
-        <h3 class="text-lg font-semibold mb-4">🗑️ Data Management</h3>
-        <div class="flex flex-wrap gap-3">
-          <button onclick="exportData()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">📥 Export Data</button>
-          <button onclick="document.getElementById('import-file').click()" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg font-medium">📤 Import Data</button>
-          <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
-          <button onclick="resetData()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg font-medium">🗑️ Reset All Data</button>
-        </div>
-        <p class="text-xs text-gray-500 mt-3">Export your data to share between devices or create a backup. Import to restore.</p>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500">Combined Minimum Payments:</span>
+        <span class="text-gray-300" id="total-cc-minimums">$0</span>
       </div>
     </div>
   </div>
 
+  <!-- Student Loans -->
+  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+    <h3 class="text-lg font-semibold mb-4">🎓 Student Loans (Judith)</h3>
+    <div id="student-loan-list" class="space-y-3"></div>
+    <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+      <span class="text-gray-400">Total Student Loans:</span>
+      <span class="text-xl font-bold text-purple-400" id="total-student-loans">$0</span>
+    </div>
+  </div>
+
+  <!-- Mortgage -->
+  <div class="glass rounded-xl p-5 border border-gray-700">
+    <h3 class="text-lg font-semibold mb-4">🏡 Mortgage (Freedom Mortgage)</h3>
+    <div class="grid grid-cols-3 gap-4 text-center">
+      <div>
+        <div class="text-gray-400 text-sm">Monthly Payment</div>
+        <div class="text-xl font-bold" id="mortgage-payment">$2,532</div>
+      </div>
+      <div>
+        <div class="text-gray-400 text-sm">Balance</div>
+        <div class="text-xl font-bold" id="mortgage-balance">TBD</div>
+      </div>
+      <div>
+        <div class="text-gray-400 text-sm">Rate</div>
+        <div class="text-xl font-bold" id="mortgage-rate">TBD</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Expenses Tab -->
+<div id="content-expenses" class="tab-content hidden">
+  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+    <h3 class="text-lg font-semibold mb-4">📋 Monthly Fixed Expenses</h3>
+    <div id="fixed-expense-list" class="space-y-2"></div>
+    <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+      <span class="text-gray-400">Total Fixed Expenses:</span>
+      <span class="text-xl font-bold" id="total-fixed-expenses">$0</span>
+    </div>
+  </div>
+
+  <div class="glass rounded-xl p-5 border border-gray-700">
+    <h3 class="text-lg font-semibold mb-4">✏️ Edit Monthly Expense</h3>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <select id="edit-expense-name" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+      </select>
+      <input type="number" id="edit-expense-amount" placeholder="New amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+      <button onclick="updateExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- Goals Tab -->
+<div id="content-goals" class="tab-content hidden">
+  <!-- Emergency Fund -->
+  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+    <h3 class="text-lg font-semibold mb-4">🏦 Emergency Fund Goal</h3>
+    <div class="mb-4">
+      <div class="flex justify-between text-sm mb-2">
+        <span class="text-gray-400">Progress</span>
+        <span id="emergency-progress-text">$0 / $25,000</span>
+      </div>
+      <div class="h-6 bg-gray-700 rounded-full overflow-hidden">
+        <div id="emergency-progress" class="h-full bg-gradient-to-r from-blue-600 to-cyan-400 progress-bar" style="width: 0%"></div>
+      </div>
+      <p class="text-xs text-gray-500 mt-2" id="emergency-eta"></p>
+    </div>
+    <div class="flex gap-3">
+      <input type="number" id="emergency-add" placeholder="Add to fund" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
+      <button onclick="addToEmergencyFund()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
+    </div>
+  </div>
+
+  <!-- Debt Payoff Goals -->
+  <div class="glass rounded-xl p-5 border border-gray-700">
+    <h3 class="text-lg font-semibold mb-4">🎯 Debt Payoff Strategy</h3>
+    <div class="space-y-4">
+      <div class="bg-gray-750 rounded-lg p-4 border border-gray-600">
+        <h4 class="font-medium text-green-400 mb-2">Recommended: Avalanche Method</h4>
+        <p class="text-sm text-gray-400">Pay minimums on all debts, then put extra money toward the highest interest rate debt first. This saves the most money on interest.</p>
+      </div>
+      <div id="debt-priority-list" class="space-y-2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Tab -->
+<div id="content-settings" class="tab-content hidden">
+  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+    <h3 class="text-lg font-semibold mb-4">💵 Income Settings</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="text-gray-400 text-sm">Craig Net Monthly (Comcast)</label>
+        <input type="number" id="setting-craig-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      </div>
+      <div>
+        <label class="text-gray-400 text-sm">Judith Net Monthly (Signature Science)</label>
+        <input type="number" id="setting-judith-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      </div>
+      <div>
+        <label class="text-gray-400 text-sm">VA Benefits Monthly</label>
+        <input type="number" id="setting-va-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      </div>
+      <div>
+        <label class="text-gray-400 text-sm">Other Monthly Income</label>
+        <input type="number" id="setting-other-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      </div>
+    </div>
+    <button onclick="saveIncomeSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save Income</button>
+  </div>
+
+  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+    <h3 class="text-lg font-semibold mb-4">🏠 HELOC Settings (RenoFi)</h3>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div>
+        <label class="text-gray-400 text-sm">Total Available</label>
+        <input type="number" id="setting-heloc-total" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      </div>
+      <div>
+        <label class="text-gray-400 text-sm">Fixed Rate (%)</label>
+        <input type="number" step="0.001" id="setting-heloc-rate" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      </div>
+      <div>
+        <label class="text-gray-400 text-sm">Draw Period (years)</label>
+        <input type="number" id="setting-heloc-draw-period" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      </div>
+      <div>
+        <label class="text-gray-400 text-sm">Repayment Period (years)</label>
+        <input type="number" id="setting-heloc-repay-period" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      </div>
+      <div>
+        <label class="text-gray-400 text-sm">Est. Monthly Payment (full draw)</label>
+        <input type="number" step="0.01" id="setting-heloc-payment" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      </div>
+    </div>
+    <button onclick="saveHelocSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save HELOC Settings</button>
+  </div>
+
+  <div class="glass rounded-xl p-5 border border-gray-700">
+    <h3 class="text-lg font-semibold mb-4">🗑️ Data Management</h3>
+    <div class="flex flex-wrap gap-3">
+      <button onclick="exportData()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">📥 Export Data</button>
+      <button onclick="document.getElementById('import-file').click()" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg font-medium">📤 Import Data</button>
+      <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
+      <button onclick="resetData()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg font-medium">🗑️ Reset All Data</button>
+    </div>
+    <p class="text-xs text-gray-500 mt-3">Export your data to share between devices or create a backup. Import to restore.</p>
+  </div>
+</div>
+```
+
+  </div>
+
   <!-- Chat Button -->
+
   <button onclick="toggleChat()" id="chat-toggle" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-500 rounded-full shadow-lg flex items-center justify-center transition-all z-40">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
   </button>
 
   <!-- Chat Panel -->
+
   <div id="chat-panel" class="fixed bottom-0 right-0 md:bottom-6 md:right-6 w-full md:w-96 h-[70vh] md:h-[500px] glass md:rounded-xl shadow-2xl border border-gray-700 flex-col z-50 hidden">
     <!-- Chat Header -->
     <div class="flex items-center justify-between p-4 border-b border-gray-700">
@@ -324,36 +369,40 @@
       </button>
     </div>
 
-    <!-- Chat Messages -->
-    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
-      <div class="flex gap-3">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-600">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-        </div>
-        <div class="max-w-[80%] rounded-xl px-4 py-2 bg-gray-700 text-gray-100">
-          <p class="text-sm">Hi! I'm your budget assistant. Ask me things like:</p>
-          <ul class="text-sm text-gray-300 mt-2 space-y-1">
-            <li>• "What's our monthly surplus?"</li>
-            <li>• "How much have we spent on the kitchen?"</li>
-            <li>• "Can we afford a $5,000 expense?"</li>
-            <li>• "How long until we hit our emergency fund goal?"</li>
-          </ul>
-        </div>
-      </div>
+```
+<!-- Chat Messages -->
+<div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+  <div class="flex gap-3">
+    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-600">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
     </div>
+    <div class="max-w-[80%] rounded-xl px-4 py-2 bg-gray-700 text-gray-100">
+      <p class="text-sm">Hi! I'm your budget assistant. Ask me things like:</p>
+      <ul class="text-sm text-gray-300 mt-2 space-y-1">
+        <li>• "What's our monthly surplus?"</li>
+        <li>• "How much have we spent on the kitchen?"</li>
+        <li>• "Can we afford a $5,000 expense?"</li>
+        <li>• "How long until we hit our emergency fund goal?"</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-    <!-- Chat Input -->
-    <div class="p-4 border-t border-gray-700">
-      <div class="flex gap-2">
-        <input type="text" id="chat-input" onkeypress="handleChatKeypress(event)" placeholder="Ask about your budget..." class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
-        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-        </button>
-      </div>
-    </div>
+<!-- Chat Input -->
+<div class="p-4 border-t border-gray-700">
+  <div class="flex gap-2">
+    <input type="text" id="chat-input" onkeypress="handleChatKeypress(event)" placeholder="Ask about your budget..." class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
+    <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </button>
+  </div>
+</div>
+```
+
   </div>
 
   <!-- Add Debt Modal -->
+
   <div id="add-debt-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
     <div class="glass rounded-xl p-6 border border-gray-700 w-full max-w-md mx-4">
       <h3 class="text-lg font-semibold mb-4">Add Credit Card</h3>
@@ -362,6 +411,8 @@
         <input type="number" id="new-card-balance" placeholder="Current balance" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
         <input type="number" step="0.01" id="new-card-apr" placeholder="APR %" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
         <input type="number" id="new-card-minimum" placeholder="Minimum payment" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+        <input type="number" id="new-card-limit" placeholder="Credit limit (optional)" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+        <input type="text" id="new-card-duedate" placeholder="Due date (e.g., 02/28) (optional)" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
       </div>
       <div class="flex gap-3 mt-4">
         <button onclick="hideAddDebtModal()" class="flex-1 bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded-lg font-medium">Cancel</button>
@@ -382,8 +433,13 @@
       heloc: {
         total: 300000,
         drawn: 0,
-        rate: 8.5,
-        drawPeriodYears: 10
+        rate: 7.625,
+        drawPeriodYears: 2,
+        repaymentYears: 20,
+        monthlyPayment: 2347.13,
+        lender: 'RenoFi Fixed Rate HELOC',
+        type: 'Fixed Rate',
+        status: 'Pursuing'
       },
       renovation: {
         budget: 300000,
@@ -400,7 +456,10 @@
         },
         expenses: []
       },
-      creditCards: [],
+      creditCards: [
+        { name: 'Chase Sapphire Reserve', balance: 29473.80, apr: 24.99, minimum: 1941.68, limit: 29400, dueDate: '02/28', lastInterest: 525.84, lastStmtDate: '02/03/26', autopay: true, rewards: '39,332 Ultimate Rewards pts' },
+        { name: 'Chase Amazon Prime Visa', balance: 9475.36, apr: 22.74, minimum: 265.00, limit: 19900, dueDate: '02/20', lastInterest: 170.85, lastStmtDate: '01/23/26', autopay: false, rewards: '3,462 pts ($34.62)' }
+      ],
       studentLoans: [
         { name: 'Federal Loan 1', balance: 0, rate: 0, payment: 561.49 },
         { name: 'Federal Loan 2', balance: 0, rate: 0, payment: 153.23 }
@@ -535,8 +594,18 @@
       const helocPct = (data.heloc.drawn / data.heloc.total) * 100;
       document.getElementById('heloc-drawn-display').textContent = `${formatCurrency(data.heloc.drawn)} / ${formatCurrency(data.heloc.total)}`;
       document.getElementById('heloc-progress').style.width = helocPct + '%';
-      document.getElementById('heloc-rate-display').textContent = `Rate: ${data.heloc.rate}%`;
-      document.getElementById('heloc-interest-display').textContent = `Monthly Interest: ${formatCurrency(getHelocInterest())}`;
+      document.getElementById('heloc-rate-display').textContent = `${data.heloc.rate}%`;
+      document.getElementById('heloc-interest-display').textContent = `Current Monthly Interest: ${formatCurrency(getHelocInterest())}`;
+      document.getElementById('heloc-lender-display').textContent = data.heloc.lender || 'RenoFi';
+      document.getElementById('heloc-draw-period-display').textContent = `${data.heloc.drawPeriodYears || 2} years`;
+      document.getElementById('heloc-repay-display').textContent = `${data.heloc.repaymentYears || 20} years`;
+      const estPayment = data.heloc.monthlyPayment || 2347.13;
+      const drawRatio = data.heloc.drawn / data.heloc.total;
+      document.getElementById('heloc-monthly-payment-display').textContent = data.heloc.drawn > 0 
+        ? `Est. Monthly Payment: ${formatCurrency(estPayment * drawRatio)}` 
+        : `Est. Monthly Payment: ${formatCurrency(estPayment)} (at full draw)`;
+      const badge = document.getElementById('heloc-status-badge');
+      if (badge) badge.textContent = data.heloc.status || 'Pursuing';
 
       const spent = getRenovationSpent();
       const renoPct = (spent / data.renovation.budget) * 100;
@@ -589,14 +658,30 @@
         ccList.innerHTML = '<p class="text-gray-500 text-sm">No credit cards added. Click "+ Add Card" to add one.</p>';
       } else {
         data.creditCards.forEach((card, idx) => {
+          const utilization = card.limit ? ((card.balance / card.limit) * 100).toFixed(0) : 0;
+          const utilColor = utilization > 90 ? 'text-red-400' : utilization > 70 ? 'text-orange-400' : utilization > 30 ? 'text-yellow-400' : 'text-green-400';
+          const overLimit = card.limit && card.balance > card.limit;
           ccList.innerHTML += `
-            <div class="bg-gray-750 rounded-lg p-3 border border-gray-600">
-              <div class="flex justify-between items-center">
-                <span class="font-medium">${card.name}</span>
-                <span class="text-orange-400 font-bold">${formatCurrency(card.balance)}</span>
+            <div class="bg-gray-750 rounded-lg p-4 border border-gray-600">
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-medium text-white">${card.name}</span>
+                <span class="text-orange-400 font-bold text-lg">${formatCurrency(card.balance)}</span>
               </div>
-              <div class="text-xs text-gray-500 mt-1">
-                ${card.apr}% APR • Min: ${formatCurrency(card.minimum)} • 
+              <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-400 mb-2">
+                <span>APR: <span class="text-gray-200">${card.apr}%</span></span>
+                <span>Min Payment: <span class="text-gray-200">${formatCurrency(card.minimum)}</span></span>
+                ${card.limit ? `<span>Credit Limit: <span class="text-gray-200">${formatCurrency(card.limit)}</span></span>` : ''}
+                ${card.limit ? `<span>Utilization: <span class="${utilColor} font-medium">${utilization}%</span>${overLimit ? ' ⚠️ OVER LIMIT' : ''}</span>` : ''}
+                ${card.dueDate ? `<span>Due Date: <span class="text-gray-200">${card.dueDate}</span></span>` : ''}
+                ${card.lastInterest ? `<span>Last Interest: <span class="text-red-400">${formatCurrency(card.lastInterest)}</span></span>` : ''}
+                ${card.autopay ? '<span class="text-green-400">✓ AutoPay ON</span>' : '<span class="text-yellow-400">⚠ No AutoPay</span>'}
+                ${card.rewards ? `<span>Rewards: <span class="text-blue-300">${card.rewards}</span></span>` : ''}
+              </div>
+              ${card.limit ? `<div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div class="h-full ${overLimit ? 'bg-red-500' : utilization > 70 ? 'bg-orange-500' : 'bg-blue-500'} progress-bar" style="width: ${Math.min(utilization, 100)}%"></div>
+              </div>` : ''}
+              <div class="text-xs text-gray-600 mt-2 flex justify-between">
+                ${card.lastStmtDate ? `<span>Stmt: ${card.lastStmtDate}</span>` : ''}
                 <button onclick="removeCreditCard(${idx})" class="text-red-400 hover:text-red-300">Remove</button>
               </div>
             </div>
@@ -604,6 +689,9 @@
         });
       }
       document.getElementById('total-cc-debt').textContent = formatCurrency(getTotalCreditCardDebt());
+      const totalInterest = data.creditCards.reduce((a, c) => a + (c.lastInterest || 0), 0);
+      document.getElementById('total-cc-interest').textContent = formatCurrency(totalInterest) + '/mo';
+      document.getElementById('total-cc-minimums').textContent = formatCurrency(getCreditCardMinimums()) + '/mo';
 
       const slList = document.getElementById('student-loan-list');
       slList.innerHTML = '';
@@ -696,6 +784,8 @@
       document.getElementById('setting-heloc-total').value = data.heloc.total;
       document.getElementById('setting-heloc-rate').value = data.heloc.rate;
       document.getElementById('setting-heloc-draw-period').value = data.heloc.drawPeriodYears;
+      document.getElementById('setting-heloc-repay-period').value = data.heloc.repaymentYears || 20;
+      document.getElementById('setting-heloc-payment').value = data.heloc.monthlyPayment || 2347.13;
     }
 
     let cashFlowChart, renovationChart;
@@ -800,16 +890,18 @@
       const balance = parseFloat(document.getElementById('new-card-balance').value) || 0;
       const apr = parseFloat(document.getElementById('new-card-apr').value) || 0;
       const minimum = parseFloat(document.getElementById('new-card-minimum').value) || 0;
+      const limit = parseFloat(document.getElementById('new-card-limit').value) || 0;
+      const dueDate = document.getElementById('new-card-duedate').value || '';
 
       if (!name) return alert('Please enter a card name');
 
-      data.creditCards.push({ name, balance, apr, minimum });
+      const card = { name, balance, apr, minimum };
+      if (limit) card.limit = limit;
+      if (dueDate) card.dueDate = dueDate;
+      data.creditCards.push(card);
       saveData();
       hideAddDebtModal();
-      document.getElementById('new-card-name').value = '';
-      document.getElementById('new-card-balance').value = '';
-      document.getElementById('new-card-apr').value = '';
-      document.getElementById('new-card-minimum').value = '';
+      ['new-card-name','new-card-balance','new-card-apr','new-card-minimum','new-card-limit','new-card-duedate'].forEach(id => document.getElementById(id).value = '');
       updateAll();
     }
 
@@ -855,8 +947,10 @@
 
     function saveHelocSettings() {
       data.heloc.total = parseFloat(document.getElementById('setting-heloc-total').value) || 300000;
-      data.heloc.rate = parseFloat(document.getElementById('setting-heloc-rate').value) || 0;
-      data.heloc.drawPeriodYears = parseFloat(document.getElementById('setting-heloc-draw-period').value) || 10;
+      data.heloc.rate = parseFloat(document.getElementById('setting-heloc-rate').value) || 7.625;
+      data.heloc.drawPeriodYears = parseFloat(document.getElementById('setting-heloc-draw-period').value) || 2;
+      data.heloc.repaymentYears = parseFloat(document.getElementById('setting-heloc-repay-period').value) || 20;
+      data.heloc.monthlyPayment = parseFloat(document.getElementById('setting-heloc-payment').value) || 2347.13;
       saveData();
       updateAll();
       alert('HELOC settings saved!');
@@ -1151,5 +1245,6 @@
       return `I'm not sure how to answer that. Try asking about:\n\n• Income or surplus\n• Debts or credit cards\n• Renovation spending\n• HELOC balance\n• Emergency fund\n• Monthly expenses\n• "Can we afford $X?"\n\nOr ask "help" to see more examples.`;
     }
   </script>
+
 </body>
 </html>
