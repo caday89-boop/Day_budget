@@ -596,18 +596,17 @@
         if (saved) {
           data = migrateData(JSON.parse(saved));
           saveData(); // re-save migrated format
+        } else {
+          // First run — preload all budget data and go straight to dashboard
+          preloadBudgetData();
+          data.setupComplete = true;
+          saveData();
         }
       } catch (e) {
         console.log('No saved data found, using defaults');
       }
       dataLoaded = true;
-      
-      // Show setup wizard if first run
-      if (!data.setupComplete) {
-        showSetupWizard();
-      } else {
-        updateAll();
-      }
+      updateAll();
     }
 
     async function saveData() {
@@ -619,85 +618,184 @@
       }
     }
 
-    // ===== FIRST-RUN SETUP WIZARD =====
-    function showSetupWizard() {
-      document.getElementById('app').classList.add('hidden');
-      document.getElementById('chat-toggle').classList.add('hidden');
-      
-      const wizard = document.createElement('div');
-      wizard.id = 'setup-wizard';
-      wizard.className = 'max-w-lg mx-auto mt-8';
-      wizard.innerHTML = `
-        <div class="glass rounded-xl p-6 border border-gray-700">
-          <h2 class="text-2xl font-bold text-white mb-2">💰 Budget Tracker Setup</h2>
-          <p class="text-gray-400 mb-6">Let's personalize your app. All data stays on your device.</p>
-          
-          <div class="space-y-4">
-            <div>
-              <label class="text-gray-400 text-sm">Household member 1 (name)</label>
-              <input type="text" id="setup-p1" placeholder="First name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
-            </div>
-            <div>
-              <label class="text-gray-400 text-sm">Household member 2 (name)</label>
-              <input type="text" id="setup-p2" placeholder="First name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="text-gray-400 text-sm">Person 1 employer (optional)</label>
-                <input type="text" id="setup-p1emp" placeholder="Employer" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
-              </div>
-              <div>
-                <label class="text-gray-400 text-sm">Person 2 employer (optional)</label>
-                <input type="text" id="setup-p2emp" placeholder="Employer" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
-              </div>
-            </div>
-            <div>
-              <label class="text-gray-400 text-sm">Location (optional)</label>
-              <input type="text" id="setup-location" placeholder="City, State" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
-            </div>
-            <div>
-              <label class="text-gray-400 text-sm">Mortgage lender (optional)</label>
-              <input type="text" id="setup-mortgage" placeholder="e.g. Wells Fargo" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
-            </div>
-            
-            <div class="border-t border-gray-700 pt-4 mt-4">
-              <p class="text-gray-400 text-sm mb-3">You can add income, debts, and expenses in Settings after setup.</p>
-              <button onclick="completeSetup()" class="w-full bg-blue-600 hover:bg-blue-500 px-4 py-3 rounded-lg font-semibold text-lg transition-colors">Start Tracking →</button>
-              <button onclick="skipSetup()" class="w-full mt-2 text-gray-500 hover:text-gray-400 text-sm py-2">Skip for now</button>
-            </div>
-          </div>
-        </div>
-      `;
-      document.body.querySelector('.min-h-screen') ? document.body.insertBefore(wizard, document.body.firstChild) : document.body.appendChild(wizard);
-    }
+    // ===== PRELOADED BUDGET DATA =====
+    // All contextual data from uploaded statements and conversation history.
+    // This runs ONCE on first load. After that, data lives in localStorage / Sheets.
+    // Profile and all additional data can be updated via the chatbot.
+    function preloadBudgetData() {
+      // Profile
+      data.profile = {
+        person1Name: 'Craig',
+        person2Name: 'Judith',
+        person1Employer: 'Comcast',
+        person2Employer: 'Signature Science',
+        location: 'Cherry Hill, NJ',
+        mortgageLender: 'Freedom Mortgage',
+        appUrl: 'https://caday89-boop.github.io/Day_budget/',
+        helocDesc: '$300k RenoFi HELOC Renovation'
+      };
 
-    function completeSetup() {
-      data.profile.person1Name = sanitize(document.getElementById('setup-p1').value.trim()) || 'Person 1';
-      data.profile.person2Name = sanitize(document.getElementById('setup-p2').value.trim()) || 'Person 2';
-      data.profile.person1Employer = sanitize(document.getElementById('setup-p1emp').value.trim());
-      data.profile.person2Employer = sanitize(document.getElementById('setup-p2emp').value.trim());
-      data.profile.location = sanitize(document.getElementById('setup-location').value.trim());
-      data.profile.mortgageLender = sanitize(document.getElementById('setup-mortgage').value.trim());
-      data.incomeLabels.person1 = data.profile.person1Name;
-      data.incomeLabels.person2 = data.profile.person2Name;
-      data.setupComplete = true;
-      saveData();
-      
-      const wizard = document.getElementById('setup-wizard');
-      if (wizard) wizard.remove();
-      document.getElementById('app').classList.remove('hidden');
-      document.getElementById('chat-toggle').classList.remove('hidden');
-      updateAll();
-    }
+      // Income
+      data.income = {
+        person1: 8757,
+        person2: 5629,
+        other1: 1663,
+        other2: 0
+      };
+      data.incomeLabels = {
+        person1: data.profile.person1Name || 'Person 1',
+        person2: data.profile.person2Name || 'Person 2',
+        other1: 'VA Benefits',
+        other2: 'Other'
+      };
 
-    function skipSetup() {
-      data.setupComplete = true;
-      saveData();
-      const wizard = document.getElementById('setup-wizard');
-      if (wizard) wizard.remove();
-      document.getElementById('app').classList.remove('hidden');
-      document.getElementById('chat-toggle').classList.remove('hidden');
-      updateAll();
+      // HELOC
+      data.heloc = {
+        total: 300000,
+        drawn: 0,
+        rate: 7.625,
+        drawPeriodYears: 2,
+        repaymentYears: 20,
+        monthlyPayment: 2347.13,
+        lender: 'RenoFi Fixed Rate HELOC',
+        type: 'Fixed Rate',
+        status: 'Pursuing'
+      };
+
+      // Renovation budget
+      data.renovation = {
+        budget: 300000,
+        categories: {
+          'Kitchen': { budget: 80000, spent: 0 },
+          'Bathrooms': { budget: 45000, spent: 0 },
+          'Flooring': { budget: 35000, spent: 0 },
+          'Windows/Doors': { budget: 25000, spent: 0 },
+          'HVAC': { budget: 20000, spent: 0 },
+          'Electrical': { budget: 15000, spent: 0 },
+          'Plumbing': { budget: 15000, spent: 0 },
+          'Exterior': { budget: 30000, spent: 0 },
+          'Other': { budget: 35000, spent: 0 }
+        },
+        expenses: []
+      };
+
+      // Credit cards (from Chase statements uploaded 02/2026)
+      data.creditCards = [
+        {
+          name: 'Chase Sapphire Reserve',
+          balance: 29473.80,
+          apr: 24.99,
+          minimum: 1941.68,
+          limit: 29400,
+          dueDate: '02/28',
+          lastInterest: 525.84,
+          lastStmtDate: '02/03/26',
+          autopay: true,
+          rewards: '39,332 Ultimate Rewards pts'
+        },
+        {
+          name: 'Chase Amazon Prime Visa',
+          balance: 9475.36,
+          apr: 22.74,
+          minimum: 265.00,
+          limit: 19900,
+          dueDate: '02/20',
+          lastInterest: 170.85,
+          lastStmtDate: '01/23/26',
+          autopay: false,
+          rewards: '3,462 pts ($34.62)'
+        }
+      ];
+
+      // Student loans
+      data.studentLoans = [
+        { name: 'Federal Loan 1', balance: 0, rate: 0, payment: 561.49 },
+        { name: 'Federal Loan 2', balance: 0, rate: 0, payment: 153.23 }
+      ];
+
+      // Mortgage
+      data.mortgage = { payment: 2532, balance: 0, rate: 0 };
+
+      // Monthly fixed expenses
+      data.expenses = {
+        'Mortgage': 2532,
+        'Student Loan 1': 561,
+        'Student Loan 2': 153,
+        'PSE&G': 347,
+        'American Water': 160,
+        'USAA Insurance': 207,
+        'Xfinity': 61,
+        'Life Insurance': 63,
+        'Schwab Investment': 300,
+        'Cell Phones': 173
+      };
+
+      // Emergency fund
+      data.emergencyFund = { current: 0, target: 25000 };
+
+      // Pre-seed document context from uploaded statements
+      data.documents = [
+        {
+          name: 'Chase Sapphire Reserve Statement (Feb 2026)',
+          uploadDate: '02/05/2026',
+          type: 'Credit Card Statement',
+          summary: 'Balance: $29,473.80, Interest: $525.84, Min: $1,941.68, Due: 02/28, 39,332 UR pts, 6 active Pay Over Time plans totaling $2,823.73',
+          extractedData: {
+            cardName: 'Chase Sapphire Reserve',
+            balance: 29473.80,
+            minimumPayment: 1941.68,
+            apr: 24.99,
+            interestCharged: 525.84,
+            creditLimit: 29400,
+            dueDate: '02/28',
+            previousBalance: 30064.44,
+            payments: 1675.00,
+            purchases: 1084.36,
+            transactionCount: 47,
+            spendingByCategory: {
+              'Dining': 312.45,
+              'Groceries': 187.23,
+              'Gas/Fuel': 89.50,
+              'Medical/Health': 156.00,
+              'Delivery/DoorDash': 134.67,
+              'Parking': 47.00,
+              'Entertainment': 62.00,
+              'Shopping': 45.51,
+              'Other': 50.00
+            }
+          }
+        },
+        {
+          name: 'Chase Amazon Prime Visa Statement (Jan 2026)',
+          uploadDate: '02/05/2026',
+          type: 'Credit Card Statement',
+          summary: 'Balance: $9,475.36, Interest: $170.85, Min: $265.00, Due: 02/20, 3,462 reward pts ($34.62)',
+          extractedData: {
+            cardName: 'Chase Amazon Prime Visa',
+            balance: 9475.36,
+            minimumPayment: 265.00,
+            apr: 22.74,
+            interestCharged: 170.85,
+            creditLimit: 19900,
+            dueDate: '02/20'
+          }
+        },
+        {
+          name: 'RenoFi HELOC Terms',
+          uploadDate: '02/05/2026',
+          type: 'Loan Terms',
+          summary: '$300,000 Fixed Rate HELOC at 7.625%, 2yr draw / 20yr repayment, Est. $2,347.13/mo at full draw, Status: Pursuing',
+          extractedData: {
+            lender: 'RenoFi',
+            amount: 300000,
+            rate: 7.625,
+            drawPeriod: 2,
+            repayment: 20,
+            monthlyPayment: 2347.13,
+            type: 'Fixed Rate'
+          }
+        }
+      ];
     }
 
     function formatCurrency(num) {
