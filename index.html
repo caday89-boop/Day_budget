@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day Family Budget Tracker</title>
+  <title>Budget Tracker</title>
   <meta name="theme-color" content="#111827">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Day Budget">
+  <meta name="apple-mobile-web-app-title" content="Budget">
   <link rel="manifest" href="/Day_budget/manifest.json">
   <link rel="apple-touch-icon" href="/Day_budget/icons/icon-192x192.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/Day_budget/icons/icon-192x192.png">
@@ -26,332 +25,371 @@
   <div id="app" class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-6">
-      <h1 class="text-3xl font-bold text-white mb-2">💰 Day Family Budget Tracker</h1>
-      <p class="text-gray-400">Craig & Judith • Cherry Hill, NJ • $300k RenoFi HELOC Renovation</p>
+      <h1 class="text-3xl font-bold text-white mb-2">💰 Budget Tracker</h1>
+      <p class="text-gray-400" id="app-subtitle">Household Budget & Renovation Tracker</p>
       <p class="text-xs text-gray-500 mt-1">Data saves to this device • Install as app from your browser menu</p>
     </div>
 
-```
-<!-- Tabs -->
-<div class="flex flex-wrap gap-2 mb-6">
-  <button onclick="showTab('dashboard')" id="tab-dashboard" class="tab-active px-4 py-2 rounded-lg font-medium transition-all">Dashboard</button>
-  <button onclick="showTab('renovation')" id="tab-renovation" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Renovation</button>
-  <button onclick="showTab('debts')" id="tab-debts" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Debts</button>
-  <button onclick="showTab('expenses')" id="tab-expenses" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Expenses</button>
-  <button onclick="showTab('goals')" id="tab-goals" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Goals</button>
-  <button onclick="showTab('settings')" id="tab-settings" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">⚙️</button>
-</div>
+    <!-- Tabs -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      <button onclick="showTab('dashboard')" id="tab-dashboard" class="tab-active px-4 py-2 rounded-lg font-medium transition-all">Dashboard</button>
+      <button onclick="showTab('renovation')" id="tab-renovation" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Renovation</button>
+      <button onclick="showTab('debts')" id="tab-debts" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Debts</button>
+      <button onclick="showTab('expenses')" id="tab-expenses" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Expenses</button>
+      <button onclick="showTab('goals')" id="tab-goals" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">Goals</button>
+      <button onclick="showTab('settings')" id="tab-settings" class="bg-gray-700 px-4 py-2 rounded-lg font-medium transition-all hover:bg-gray-600">⚙️</button>
+    </div>
 
-<!-- Dashboard Tab -->
-<div id="content-dashboard" class="tab-content">
-  <!-- Top Stats -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-    <div class="glass rounded-xl p-4 border border-gray-700">
-      <div class="text-gray-400 text-sm mb-1">💵 Monthly Income</div>
-      <div class="text-2xl font-bold text-green-400" id="stat-income">$0</div>
-      <div class="text-xs text-gray-500 mt-1" id="stat-income-breakdown"></div>
-    </div>
-    <div class="glass rounded-xl p-4 border border-gray-700">
-      <div class="text-gray-400 text-sm mb-1">📊 Monthly Surplus</div>
-      <div class="text-2xl font-bold" id="stat-surplus">$0</div>
-    </div>
-    <div class="glass rounded-xl p-4 border border-gray-700">
-      <div class="text-gray-400 text-sm mb-1">💳 Total Debt</div>
-      <div class="text-2xl font-bold text-orange-400" id="stat-debt">$0</div>
-    </div>
-    <div class="glass rounded-xl p-4 border border-gray-700">
-      <div class="text-gray-400 text-sm mb-1">🏦 Emergency Fund</div>
-      <div class="text-2xl font-bold text-blue-400" id="stat-emergency">$0</div>
-    </div>
-  </div>
+    <!-- Dashboard Tab -->
+    <div id="content-dashboard" class="tab-content">
+      <!-- Top Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="glass rounded-xl p-4 border border-gray-700">
+          <div class="text-gray-400 text-sm mb-1">💵 Monthly Income</div>
+          <div class="text-2xl font-bold text-green-400" id="stat-income">$0</div>
+          <div class="text-xs text-gray-500 mt-1" id="stat-income-breakdown"></div>
+        </div>
+        <div class="glass rounded-xl p-4 border border-gray-700">
+          <div class="text-gray-400 text-sm mb-1">📊 Monthly Surplus</div>
+          <div class="text-2xl font-bold" id="stat-surplus">$0</div>
+        </div>
+        <div class="glass rounded-xl p-4 border border-gray-700">
+          <div class="text-gray-400 text-sm mb-1">💳 Total Debt</div>
+          <div class="text-2xl font-bold text-orange-400" id="stat-debt">$0</div>
+        </div>
+        <div class="glass rounded-xl p-4 border border-gray-700">
+          <div class="text-gray-400 text-sm mb-1">🏦 Emergency Fund</div>
+          <div class="text-2xl font-bold text-blue-400" id="stat-emergency">$0</div>
+        </div>
+      </div>
 
-  <!-- Charts Row -->
-  <div class="grid md:grid-cols-2 gap-6 mb-6">
-    <div class="glass rounded-xl p-5 border border-gray-700">
-      <h3 class="text-lg font-semibold mb-4">Monthly Cash Flow</h3>
-      <canvas id="cashFlowChart" height="200"></canvas>
-    </div>
-    <div class="glass rounded-xl p-5 border border-gray-700">
-      <h3 class="text-lg font-semibold mb-4">Renovation Progress</h3>
-      <canvas id="renovationChart" height="200"></canvas>
-    </div>
-  </div>
+      <!-- Charts Row -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="glass rounded-xl p-5 border border-gray-700">
+          <h3 class="text-lg font-semibold mb-4">Monthly Cash Flow</h3>
+          <canvas id="cashFlowChart" height="200"></canvas>
+        </div>
+        <div class="glass rounded-xl p-5 border border-gray-700">
+          <h3 class="text-lg font-semibold mb-4">Renovation Progress</h3>
+          <canvas id="renovationChart" height="200"></canvas>
+        </div>
+      </div>
 
-  <!-- Quick Actions -->
-  <div class="glass rounded-xl p-5 border border-gray-700">
-    <h3 class="text-lg font-semibold mb-4">Quick Add Expense</h3>
-    <div class="flex flex-wrap gap-3">
-      <select id="quick-category" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
-        <option value="Kitchen">Kitchen</option>
-        <option value="Bathrooms">Bathrooms</option>
-        <option value="Flooring">Flooring</option>
-        <option value="Windows/Doors">Windows/Doors</option>
-        <option value="HVAC">HVAC</option>
-        <option value="Electrical">Electrical</option>
-        <option value="Plumbing">Plumbing</option>
-        <option value="Exterior">Exterior</option>
-        <option value="Other">Other</option>
-      </select>
-      <input type="number" id="quick-amount" placeholder="Amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 w-32">
-      <input type="text" id="quick-note" placeholder="Note (optional)" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1 min-w-[150px]">
-      <button onclick="addRenovationExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
+      <!-- Quick Actions -->
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">Quick Add Expense</h3>
+        <div class="flex flex-wrap gap-3">
+          <select id="quick-category" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+            <option value="Kitchen">Kitchen</option>
+            <option value="Bathrooms">Bathrooms</option>
+            <option value="Flooring">Flooring</option>
+            <option value="Windows/Doors">Windows/Doors</option>
+            <option value="HVAC">HVAC</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Plumbing">Plumbing</option>
+            <option value="Exterior">Exterior</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="number" id="quick-amount" placeholder="Amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 w-32">
+          <input type="text" id="quick-note" placeholder="Note (optional)" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1 min-w-[150px]">
+          <button onclick="addRenovationExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- Renovation Tab -->
-<div id="content-renovation" class="tab-content hidden">
-  <!-- HELOC Status -->
-  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-    <div class="flex justify-between items-start mb-4">
-      <h3 class="text-lg font-semibold">🏠 HELOC Status</h3>
-      <span class="text-xs bg-yellow-600/30 text-yellow-300 px-2 py-1 rounded-full" id="heloc-status-badge">Pursuing</span>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-sm">
-      <div class="bg-gray-800/50 rounded-lg p-3">
-        <div class="text-gray-500 text-xs">Lender</div>
-        <div class="text-gray-200 font-medium" id="heloc-lender-display">RenoFi</div>
+    <!-- Renovation Tab -->
+    <div id="content-renovation" class="tab-content hidden">
+      <!-- HELOC Status -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <div class="flex justify-between items-start mb-4">
+          <h3 class="text-lg font-semibold">🏠 HELOC Status</h3>
+          <span class="text-xs bg-yellow-600/30 text-yellow-300 px-2 py-1 rounded-full" id="heloc-status-badge">Pursuing</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-sm">
+          <div class="bg-gray-800/50 rounded-lg p-3">
+            <div class="text-gray-500 text-xs">Lender</div>
+            <div class="text-gray-200 font-medium" id="heloc-lender-display">RenoFi</div>
+          </div>
+          <div class="bg-gray-800/50 rounded-lg p-3">
+            <div class="text-gray-500 text-xs">Fixed Rate</div>
+            <div class="text-gray-200 font-medium" id="heloc-rate-display">7.625%</div>
+          </div>
+          <div class="bg-gray-800/50 rounded-lg p-3">
+            <div class="text-gray-500 text-xs">Draw Period</div>
+            <div class="text-gray-200 font-medium" id="heloc-draw-period-display">2 years</div>
+          </div>
+          <div class="bg-gray-800/50 rounded-lg p-3">
+            <div class="text-gray-500 text-xs">Repayment</div>
+            <div class="text-gray-200 font-medium" id="heloc-repay-display">20 years</div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-gray-400">Amount Drawn</span>
+            <span id="heloc-drawn-display">$0 / $300,000</span>
+          </div>
+          <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
+            <div id="heloc-progress" class="h-full bg-gradient-to-r from-blue-600 to-blue-400 progress-bar" style="width: 0%"></div>
+          </div>
+          <div class="flex justify-between text-xs text-gray-500 mt-1">
+            <span id="heloc-monthly-payment-display">Est. Monthly Payment: $2,347.13 (at full draw)</span>
+            <span id="heloc-interest-display">Current Monthly Interest: $0</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <input type="number" id="heloc-draw-amount" placeholder="Draw amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
+          <button onclick="addHelocDraw()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">Draw Funds</button>
+        </div>
       </div>
-      <div class="bg-gray-800/50 rounded-lg p-3">
-        <div class="text-gray-500 text-xs">Fixed Rate</div>
-        <div class="text-gray-200 font-medium" id="heloc-rate-display">7.625%</div>
-      </div>
-      <div class="bg-gray-800/50 rounded-lg p-3">
-        <div class="text-gray-500 text-xs">Draw Period</div>
-        <div class="text-gray-200 font-medium" id="heloc-draw-period-display">2 years</div>
-      </div>
-      <div class="bg-gray-800/50 rounded-lg p-3">
-        <div class="text-gray-500 text-xs">Repayment</div>
-        <div class="text-gray-200 font-medium" id="heloc-repay-display">20 years</div>
-      </div>
-    </div>
-    <div class="mb-4">
-      <div class="flex justify-between text-sm mb-2">
-        <span class="text-gray-400">Amount Drawn</span>
-        <span id="heloc-drawn-display">$0 / $300,000</span>
-      </div>
-      <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
-        <div id="heloc-progress" class="h-full bg-gradient-to-r from-blue-600 to-blue-400 progress-bar" style="width: 0%"></div>
-      </div>
-      <div class="flex justify-between text-xs text-gray-500 mt-1">
-        <span id="heloc-monthly-payment-display">Est. Monthly Payment: $2,347.13 (at full draw)</span>
-        <span id="heloc-interest-display">Current Monthly Interest: $0</span>
-      </div>
-    </div>
-    <div class="flex gap-3">
-      <input type="number" id="heloc-draw-amount" placeholder="Draw amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
-      <button onclick="addHelocDraw()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">Draw Funds</button>
-    </div>
-  </div>
 
-  <!-- Renovation Budget by Category -->
-  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-    <h3 class="text-lg font-semibold mb-4">🔨 Renovation Budget</h3>
-    <div class="mb-4">
-      <div class="flex justify-between text-sm mb-2">
-        <span class="text-gray-400">Total Spent</span>
-        <span id="reno-total-display">$0 / $300,000</span>
+      <!-- Renovation Budget by Category -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🔨 Renovation Budget</h3>
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-gray-400">Total Spent</span>
+            <span id="reno-total-display">$0 / $300,000</span>
+          </div>
+          <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
+            <div id="reno-progress" class="h-full bg-gradient-to-r from-green-600 to-emerald-400 progress-bar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div id="category-list" class="space-y-3"></div>
       </div>
-      <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
-        <div id="reno-progress" class="h-full bg-gradient-to-r from-green-600 to-emerald-400 progress-bar" style="width: 0%"></div>
-      </div>
-    </div>
-    <div id="category-list" class="space-y-3"></div>
-  </div>
 
-  <!-- Recent Expenses -->
-  <div class="glass rounded-xl p-5 border border-gray-700">
-    <h3 class="text-lg font-semibold mb-4">📝 Recent Renovation Expenses</h3>
-    <div id="expense-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
-  </div>
-</div>
+      <!-- Recent Expenses -->
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">📝 Recent Renovation Expenses</h3>
+        <div id="expense-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+      </div>
+    </div>
 
-<!-- Debts Tab -->
-<div id="content-debts" class="tab-content hidden">
-  <!-- Credit Cards -->
-  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold">💳 Credit Cards</h3>
-      <button onclick="showAddDebtModal()" class="bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-lg text-sm">+ Add Card</button>
-    </div>
-    <div id="credit-card-list" class="space-y-3"></div>
-    <div class="mt-4 pt-4 border-t border-gray-700 space-y-2">
-      <div class="flex justify-between">
-        <span class="text-gray-400">Total Credit Card Debt:</span>
-        <span class="text-xl font-bold text-orange-400" id="total-cc-debt">$0</span>
+    <!-- Debts Tab -->
+    <div id="content-debts" class="tab-content hidden">
+      <!-- Credit Cards -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">💳 Credit Cards</h3>
+          <button onclick="showAddDebtModal()" class="bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-lg text-sm">+ Add Card</button>
+        </div>
+        <div id="credit-card-list" class="space-y-3"></div>
+        <div class="mt-4 pt-4 border-t border-gray-700 space-y-2">
+          <div class="flex justify-between">
+            <span class="text-gray-400">Total Credit Card Debt:</span>
+            <span class="text-xl font-bold text-orange-400" id="total-cc-debt">$0</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Combined Monthly Interest:</span>
+            <span class="text-red-400 font-medium" id="total-cc-interest">$0</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-500">Combined Minimum Payments:</span>
+            <span class="text-gray-300" id="total-cc-minimums">$0</span>
+          </div>
+        </div>
       </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-500">Combined Monthly Interest:</span>
-        <span class="text-red-400 font-medium" id="total-cc-interest">$0</span>
-      </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-500">Combined Minimum Payments:</span>
-        <span class="text-gray-300" id="total-cc-minimums">$0</span>
-      </div>
-    </div>
-  </div>
 
-  <!-- Student Loans -->
-  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-    <h3 class="text-lg font-semibold mb-4">🎓 Student Loans (Judith)</h3>
-    <div id="student-loan-list" class="space-y-3"></div>
-    <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
-      <span class="text-gray-400">Total Student Loans:</span>
-      <span class="text-xl font-bold text-purple-400" id="total-student-loans">$0</span>
-    </div>
-  </div>
+      <!-- Student Loans -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🎓 Student Loans</h3>
+        <div id="student-loan-list" class="space-y-3"></div>
+        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+          <span class="text-gray-400">Total Student Loans:</span>
+          <span class="text-xl font-bold text-purple-400" id="total-student-loans">$0</span>
+        </div>
+      </div>
 
-  <!-- Mortgage -->
-  <div class="glass rounded-xl p-5 border border-gray-700">
-    <h3 class="text-lg font-semibold mb-4">🏡 Mortgage (Freedom Mortgage)</h3>
-    <div class="grid grid-cols-3 gap-4 text-center">
-      <div>
-        <div class="text-gray-400 text-sm">Monthly Payment</div>
-        <div class="text-xl font-bold" id="mortgage-payment">$2,532</div>
-      </div>
-      <div>
-        <div class="text-gray-400 text-sm">Balance</div>
-        <div class="text-xl font-bold" id="mortgage-balance">TBD</div>
-      </div>
-      <div>
-        <div class="text-gray-400 text-sm">Rate</div>
-        <div class="text-xl font-bold" id="mortgage-rate">TBD</div>
+      <!-- Mortgage -->
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4" id="mortgage-title">🏡 Mortgage</h3>
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div class="text-gray-400 text-sm">Monthly Payment</div>
+            <div class="text-xl font-bold" id="mortgage-payment">$2,532</div>
+          </div>
+          <div>
+            <div class="text-gray-400 text-sm">Balance</div>
+            <div class="text-xl font-bold" id="mortgage-balance">TBD</div>
+          </div>
+          <div>
+            <div class="text-gray-400 text-sm">Rate</div>
+            <div class="text-xl font-bold" id="mortgage-rate">TBD</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Expenses Tab -->
-<div id="content-expenses" class="tab-content hidden">
-  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-    <h3 class="text-lg font-semibold mb-4">📋 Monthly Fixed Expenses</h3>
-    <div id="fixed-expense-list" class="space-y-2"></div>
-    <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
-      <span class="text-gray-400">Total Fixed Expenses:</span>
-      <span class="text-xl font-bold" id="total-fixed-expenses">$0</span>
-    </div>
-  </div>
+    <!-- Expenses Tab -->
+    <div id="content-expenses" class="tab-content hidden">
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">📋 Monthly Fixed Expenses</h3>
+        <div id="fixed-expense-list" class="space-y-2"></div>
+        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+          <span class="text-gray-400">Total Fixed Expenses:</span>
+          <span class="text-xl font-bold" id="total-fixed-expenses">$0</span>
+        </div>
+      </div>
 
-  <div class="glass rounded-xl p-5 border border-gray-700">
-    <h3 class="text-lg font-semibold mb-4">✏️ Edit Monthly Expense</h3>
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-      <select id="edit-expense-name" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
-      </select>
-      <input type="number" id="edit-expense-amount" placeholder="New amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
-      <button onclick="updateExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Update</button>
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">✏️ Edit Monthly Expense</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <select id="edit-expense-name" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+          </select>
+          <input type="number" id="edit-expense-amount" placeholder="New amount" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2">
+          <button onclick="updateExpense()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Update</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- Goals Tab -->
-<div id="content-goals" class="tab-content hidden">
-  <!-- Emergency Fund -->
-  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-    <h3 class="text-lg font-semibold mb-4">🏦 Emergency Fund Goal</h3>
-    <div class="mb-4">
-      <div class="flex justify-between text-sm mb-2">
-        <span class="text-gray-400">Progress</span>
-        <span id="emergency-progress-text">$0 / $25,000</span>
+    <!-- Goals Tab -->
+    <div id="content-goals" class="tab-content hidden">
+      <!-- Emergency Fund -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🏦 Emergency Fund Goal</h3>
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-2">
+            <span class="text-gray-400">Progress</span>
+            <span id="emergency-progress-text">$0 / $25,000</span>
+          </div>
+          <div class="h-6 bg-gray-700 rounded-full overflow-hidden">
+            <div id="emergency-progress" class="h-full bg-gradient-to-r from-blue-600 to-cyan-400 progress-bar" style="width: 0%"></div>
+          </div>
+          <p class="text-xs text-gray-500 mt-2" id="emergency-eta"></p>
+        </div>
+        <div class="flex gap-3">
+          <input type="number" id="emergency-add" placeholder="Add to fund" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
+          <button onclick="addToEmergencyFund()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
+        </div>
       </div>
-      <div class="h-6 bg-gray-700 rounded-full overflow-hidden">
-        <div id="emergency-progress" class="h-full bg-gradient-to-r from-blue-600 to-cyan-400 progress-bar" style="width: 0%"></div>
-      </div>
-      <p class="text-xs text-gray-500 mt-2" id="emergency-eta"></p>
-    </div>
-    <div class="flex gap-3">
-      <input type="number" id="emergency-add" placeholder="Add to fund" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 flex-1">
-      <button onclick="addToEmergencyFund()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">+ Add</button>
-    </div>
-  </div>
 
-  <!-- Debt Payoff Goals -->
-  <div class="glass rounded-xl p-5 border border-gray-700">
-    <h3 class="text-lg font-semibold mb-4">🎯 Debt Payoff Strategy</h3>
-    <div class="space-y-4">
-      <div class="bg-gray-750 rounded-lg p-4 border border-gray-600">
-        <h4 class="font-medium text-green-400 mb-2">Recommended: Avalanche Method</h4>
-        <p class="text-sm text-gray-400">Pay minimums on all debts, then put extra money toward the highest interest rate debt first. This saves the most money on interest.</p>
+      <!-- Debt Payoff Goals -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🎯 Debt Payoff Strategy</h3>
+        <div class="space-y-4">
+          <div class="bg-gray-750 rounded-lg p-4 border border-gray-600">
+            <h4 class="font-medium text-green-400 mb-2">Recommended: Avalanche Method</h4>
+            <p class="text-sm text-gray-400">Pay minimums on all debts, then put extra money toward the highest interest rate debt first. This saves the most money on interest.</p>
+          </div>
+          <div id="debt-priority-list" class="space-y-2"></div>
+        </div>
       </div>
-      <div id="debt-priority-list" class="space-y-2"></div>
-    </div>
-  </div>
-</div>
 
-<!-- Settings Tab -->
-<div id="content-settings" class="tab-content hidden">
-  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-    <h3 class="text-lg font-semibold mb-4">💵 Income Settings</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <label class="text-gray-400 text-sm">Craig Net Monthly (Comcast)</label>
-        <input type="number" id="setting-craig-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      <!-- Goals & Action Plans (set via chatbot) -->
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">📋 Goals & Action Plans</h3>
+          <span class="text-xs text-gray-500">Set goals via the chat assistant</span>
+        </div>
+        <div id="goals-list" class="space-y-3">
+          <p class="text-gray-500 text-sm">No goals set yet. Open the chat and say things like:<br>
+          • "Set a goal to pay off the Sapphire in 12 months"<br>
+          • "I want to save $500/month for emergencies"<br>
+          • "Set a monthly debt payoff goal of $2,000"<br>
+          • "Plan to cut dining out to $200/month"</p>
+        </div>
       </div>
-      <div>
-        <label class="text-gray-400 text-sm">Judith Net Monthly (Signature Science)</label>
-        <input type="number" id="setting-judith-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-      </div>
-      <div>
-        <label class="text-gray-400 text-sm">VA Benefits Monthly</label>
-        <input type="number" id="setting-va-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-      </div>
-      <div>
-        <label class="text-gray-400 text-sm">Other Monthly Income</label>
-        <input type="number" id="setting-other-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-      </div>
-    </div>
-    <button onclick="saveIncomeSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save Income</button>
-  </div>
 
-  <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
-    <h3 class="text-lg font-semibold mb-4">🏠 HELOC Settings (RenoFi)</h3>
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-      <div>
-        <label class="text-gray-400 text-sm">Total Available</label>
-        <input type="number" id="setting-heloc-total" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-      </div>
-      <div>
-        <label class="text-gray-400 text-sm">Fixed Rate (%)</label>
-        <input type="number" step="0.001" id="setting-heloc-rate" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-      </div>
-      <div>
-        <label class="text-gray-400 text-sm">Draw Period (years)</label>
-        <input type="number" id="setting-heloc-draw-period" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-      </div>
-      <div>
-        <label class="text-gray-400 text-sm">Repayment Period (years)</label>
-        <input type="number" id="setting-heloc-repay-period" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
-      </div>
-      <div>
-        <label class="text-gray-400 text-sm">Est. Monthly Payment (full draw)</label>
-        <input type="number" step="0.01" id="setting-heloc-payment" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+      <!-- Chat-Decided Action Items -->
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">💬 Decisions Log</h3>
+          <button onclick="clearDecisions()" class="text-xs text-red-400 hover:text-red-300">Clear All</button>
+        </div>
+        <p class="text-xs text-gray-500 mb-3">Important decisions and plans from your chat conversations — synced to Google Sheets when connected.</p>
+        <div id="decisions-log" class="space-y-2">
+          <p class="text-gray-500 text-sm">No decisions logged yet. The chat assistant will record key decisions here automatically.</p>
+        </div>
       </div>
     </div>
-    <button onclick="saveHelocSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save HELOC Settings</button>
-  </div>
 
-  <div class="glass rounded-xl p-5 border border-gray-700">
-    <h3 class="text-lg font-semibold mb-4">🗑️ Data Management</h3>
-    <div class="flex flex-wrap gap-3">
-      <button onclick="exportData()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">📥 Export Data</button>
-      <button onclick="document.getElementById('import-file').click()" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg font-medium">📤 Import Data</button>
-      <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
-      <button onclick="resetData()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg font-medium">🗑️ Reset All Data</button>
+    <!-- Settings Tab -->
+    <div id="content-settings" class="tab-content hidden">
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">💵 Income Settings</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-gray-400 text-sm" id="label-p1-income">Person 1 Net Monthly</label>
+            <input type="number" id="setting-p1-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm" id="label-p2-income">Person 2 Net Monthly</label>
+            <input type="number" id="setting-p2-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">VA Benefits Monthly</label>
+            <input type="number" id="setting-va-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">Other Monthly Income</label>
+            <input type="number" id="setting-other-income" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+        </div>
+        <button onclick="saveIncomeSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save Income</button>
+      </div>
+
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4" id="heloc-settings-title">🏠 HELOC Settings</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div>
+            <label class="text-gray-400 text-sm">Total Available</label>
+            <input type="number" id="setting-heloc-total" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">Fixed Rate (%)</label>
+            <input type="number" step="0.001" id="setting-heloc-rate" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">Draw Period (years)</label>
+            <input type="number" id="setting-heloc-draw-period" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">Repayment Period (years)</label>
+            <input type="number" id="setting-heloc-repay-period" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+          <div>
+            <label class="text-gray-400 text-sm">Est. Monthly Payment (full draw)</label>
+            <input type="number" step="0.01" id="setting-heloc-payment" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1">
+          </div>
+        </div>
+        <button onclick="saveHelocSettings()" class="mt-4 bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium">Save HELOC Settings</button>
+      </div>
+
+      <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold mb-4">🔄 Sync & Share</h3>
+        <p class="text-sm text-gray-400 mb-4">Keep both phones in sync via Google Sheets. Changes on either phone will sync to the shared sheet.</p>
+        <div class="space-y-3 mb-4">
+          <div>
+            <label class="text-gray-400 text-sm">Google Sheets Web App URL</label>
+            <input type="text" id="setting-sheets-url" placeholder="Paste your Google Apps Script URL here" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-sm">
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="syncToSheets()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg font-medium text-sm">☁️ Push to Sheets</button>
+            <button onclick="syncFromSheets()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium text-sm">⬇️ Pull from Sheets</button>
+            <button onclick="shareViaText()" class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-lg font-medium text-sm">📱 Share via Text</button>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500">Push saves your data to the shared sheet. Pull loads the latest. Share via Text sends a snapshot to your partner.</p>
+      </div>
+
+      <div class="glass rounded-xl p-5 border border-gray-700">
+        <h3 class="text-lg font-semibold mb-4">🗑️ Data Management</h3>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="exportData()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium">📥 Export Data</button>
+          <button onclick="document.getElementById('import-file').click()" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg font-medium">📤 Import Data</button>
+          <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
+          <button onclick="resetData()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg font-medium">🗑️ Reset All Data</button>
+        </div>
+        <p class="text-xs text-gray-500 mt-3">Export your data to share between devices or create a backup. Import to restore.</p>
+      </div>
     </div>
-    <p class="text-xs text-gray-500 mt-3">Export your data to share between devices or create a backup. Import to restore.</p>
-  </div>
-</div>
-```
-
   </div>
 
   <!-- Chat Button -->
-
   <button onclick="toggleChat()" id="chat-toggle" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-500 rounded-full shadow-lg flex items-center justify-center transition-all z-40">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
   </button>
 
   <!-- Chat Panel -->
-
   <div id="chat-panel" class="fixed bottom-0 right-0 md:bottom-6 md:right-6 w-full md:w-96 h-[70vh] md:h-[500px] glass md:rounded-xl shadow-2xl border border-gray-700 flex-col z-50 hidden">
     <!-- Chat Header -->
     <div class="flex items-center justify-between p-4 border-b border-gray-700">
@@ -369,40 +407,46 @@
       </button>
     </div>
 
-```
-<!-- Chat Messages -->
-<div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
-  <div class="flex gap-3">
-    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-600">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+    <!-- Chat Messages -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <div class="flex gap-3">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        </div>
+        <div class="max-w-[80%] rounded-xl px-4 py-2 bg-gray-700 text-gray-100">
+          <p class="text-sm">Hi! I know your finances inside and out — income, credit card statements, HELOC terms, everything. Try asking:</p>
+          <ul class="text-sm text-gray-300 mt-2 space-y-1">
+            <li>• "Can we afford the HELOC?"</li>
+            <li>• "How much interest are we wasting?"</li>
+            <li>• "What should we focus on?"</li>
+            <li>• "Tell me about the Sapphire card"</li>
+            <li>• "How are we doing?"</li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div class="max-w-[80%] rounded-xl px-4 py-2 bg-gray-700 text-gray-100">
-      <p class="text-sm">Hi! I'm your budget assistant. Ask me things like:</p>
-      <ul class="text-sm text-gray-300 mt-2 space-y-1">
-        <li>• "What's our monthly surplus?"</li>
-        <li>• "How much have we spent on the kitchen?"</li>
-        <li>• "Can we afford a $5,000 expense?"</li>
-        <li>• "How long until we hit our emergency fund goal?"</li>
-      </ul>
+
+    <!-- Chat Input -->
+    <div class="p-4 border-t border-gray-700">
+      <!-- Upload status banner -->
+      <div id="upload-status" class="hidden mb-2 px-3 py-2 rounded-lg text-sm bg-blue-900/50 border border-blue-700 text-blue-200">
+        <span id="upload-status-text">Processing...</span>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="document.getElementById('chat-file-upload').click()" class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors flex-shrink-0" title="Upload document (PDF, image, CSV, text)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <input type="file" id="chat-file-upload" accept=".pdf,.csv,.txt,.json,.png,.jpg,.jpeg,.xlsx,.xls,.doc,.docx" onchange="handleChatFileUpload(event)" class="hidden" multiple>
+        <input type="text" id="chat-input" onkeypress="handleChatKeypress(event)" placeholder="Ask about your budget or upload a doc..." class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
+        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg transition-colors flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+      <p class="text-xs text-gray-600 mt-1">📎 Upload statements, bills, pay stubs — I'll extract the data into your budget</p>
     </div>
-  </div>
-</div>
-
-<!-- Chat Input -->
-<div class="p-4 border-t border-gray-700">
-  <div class="flex gap-2">
-    <input type="text" id="chat-input" onkeypress="handleChatKeypress(event)" placeholder="Ask about your budget..." class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
-    <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-    </button>
-  </div>
-</div>
-```
-
   </div>
 
   <!-- Add Debt Modal -->
-
   <div id="add-debt-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
     <div class="glass rounded-xl p-6 border border-gray-700 w-full max-w-md mx-4">
       <h3 class="text-lg font-semibold mb-4">Add Credit Card</h3>
@@ -424,67 +468,70 @@
   <script>
     // ===== DATA STRUCTURE =====
     const defaultData = {
+      profile: {
+        person1Name: '',
+        person2Name: '',
+        person1Employer: '',
+        person2Employer: '',
+        location: '',
+        helocDesc: '',
+        mortgageLender: '',
+        appUrl: ''
+      },
       income: {
-        craig: 8757,
-        judith: 5629,
-        va: 1663,
-        other: 0
+        person1: 0,
+        person2: 0,
+        other1: 0,
+        other2: 0
+      },
+      incomeLabels: {
+        person1: 'Person 1',
+        person2: 'Person 2',
+        other1: 'Benefits',
+        other2: 'Other'
       },
       heloc: {
-        total: 300000,
+        total: 0,
         drawn: 0,
-        rate: 7.625,
-        drawPeriodYears: 2,
+        rate: 0,
+        drawPeriodYears: 10,
         repaymentYears: 20,
-        monthlyPayment: 2347.13,
-        lender: 'RenoFi Fixed Rate HELOC',
-        type: 'Fixed Rate',
-        status: 'Pursuing'
+        monthlyPayment: 0,
+        lender: '',
+        type: '',
+        status: 'Not Started'
       },
       renovation: {
-        budget: 300000,
+        budget: 0,
         categories: {
-          'Kitchen': { budget: 80000, spent: 0 },
-          'Bathrooms': { budget: 45000, spent: 0 },
-          'Flooring': { budget: 35000, spent: 0 },
-          'Windows/Doors': { budget: 25000, spent: 0 },
-          'HVAC': { budget: 20000, spent: 0 },
-          'Electrical': { budget: 15000, spent: 0 },
-          'Plumbing': { budget: 15000, spent: 0 },
-          'Exterior': { budget: 30000, spent: 0 },
-          'Other': { budget: 35000, spent: 0 }
+          'Kitchen': { budget: 0, spent: 0 },
+          'Bathrooms': { budget: 0, spent: 0 },
+          'Flooring': { budget: 0, spent: 0 },
+          'Windows/Doors': { budget: 0, spent: 0 },
+          'HVAC': { budget: 0, spent: 0 },
+          'Electrical': { budget: 0, spent: 0 },
+          'Plumbing': { budget: 0, spent: 0 },
+          'Exterior': { budget: 0, spent: 0 },
+          'Other': { budget: 0, spent: 0 }
         },
         expenses: []
       },
-      creditCards: [
-        { name: 'Chase Sapphire Reserve', balance: 29473.80, apr: 24.99, minimum: 1941.68, limit: 29400, dueDate: '02/28', lastInterest: 525.84, lastStmtDate: '02/03/26', autopay: true, rewards: '39,332 Ultimate Rewards pts' },
-        { name: 'Chase Amazon Prime Visa', balance: 9475.36, apr: 22.74, minimum: 265.00, limit: 19900, dueDate: '02/20', lastInterest: 170.85, lastStmtDate: '01/23/26', autopay: false, rewards: '3,462 pts ($34.62)' }
-      ],
-      studentLoans: [
-        { name: 'Federal Loan 1', balance: 0, rate: 0, payment: 561.49 },
-        { name: 'Federal Loan 2', balance: 0, rate: 0, payment: 153.23 }
-      ],
+      creditCards: [],
+      studentLoans: [],
       mortgage: {
-        payment: 2532,
+        payment: 0,
         balance: 0,
         rate: 0
       },
-      expenses: {
-        'Mortgage': 2532,
-        'Student Loan 1': 561,
-        'Student Loan 2': 153,
-        'PSE&G': 347,
-        'American Water': 160,
-        'USAA Insurance': 207,
-        'Xfinity': 61,
-        'Life Insurance': 63,
-        'Schwab Investment': 300,
-        'Cell Phones': 173
-      },
+      expenses: {},
       emergencyFund: {
         current: 0,
-        target: 25000
+        target: 0
       },
+      goals: [],
+      chatLog: [],
+      documents: [],
+      setupComplete: false,
       lastUpdated: new Date().toISOString()
     };
 
@@ -495,17 +542,72 @@
     // Persistent storage helper
     const STORAGE_KEY = 'dayFamilyBudget';
 
+    // ===== HTML SANITIZER =====
+    function sanitize(str) {
+      if (typeof str !== 'string') return str;
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ===== PROFILE HELPERS =====
+    function p1() { return data.profile?.person1Name || 'Person 1'; }
+    function p2() { return data.profile?.person2Name || 'Person 2'; }
+    function p1Emp() { return data.profile?.person1Employer ? ` (${data.profile.person1Employer})` : ''; }
+    function p2Emp() { return data.profile?.person2Employer ? ` (${data.profile.person2Employer})` : ''; }
+    function helocLabel() { return data.heloc?.lender || 'HELOC'; }
+    function mortLabel() { return data.profile?.mortgageLender || 'Mortgage'; }
+    function subtitle() {
+      const parts = [];
+      if (data.profile?.person1Name && data.profile?.person2Name) parts.push(`${data.profile.person1Name} & ${data.profile.person2Name}`);
+      if (data.profile?.location) parts.push(data.profile.location);
+      if (data.heloc?.total > 0) parts.push(`${formatCurrency(data.heloc.total)} ${data.heloc.lender || 'HELOC'} Renovation`);
+      return parts.length > 0 ? parts.join(' • ') : 'Household Budget & Renovation Tracker';
+    }
+
+    // ===== BACKWARD COMPATIBILITY MIGRATION =====
+    function migrateData(d) {
+      // Migrate old 'craig/judith' income keys to generic person1/person2
+      if (!d.profile) d.profile = JSON.parse(JSON.stringify(defaultData.profile));
+      if (!d.incomeLabels) d.incomeLabels = JSON.parse(JSON.stringify(defaultData.incomeLabels));
+      if (!d.documents) d.documents = [];
+      if (!d.goals) d.goals = [];
+      if (!d.chatLog) d.chatLog = [];
+      
+      if (d.income && d.income.craig !== undefined) {
+        // Old format — migrate
+        d.income.person1 = d.income.craig || 0;
+        d.income.person2 = d.income.judith || 0;
+        d.income.other1 = d.income.va || 0;
+        d.income.other2 = d.income.other || 0;
+        delete d.income.craig;
+        delete d.income.judith;
+        delete d.income.va;
+        delete d.income.other;
+      }
+      
+      if (d.setupComplete === undefined) d.setupComplete = true; // existing users already have data
+      return d;
+    }
+
     async function loadData() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
-          data = JSON.parse(saved);
+          data = migrateData(JSON.parse(saved));
+          saveData(); // re-save migrated format
         }
       } catch (e) {
         console.log('No saved data found, using defaults');
       }
       dataLoaded = true;
-      updateAll();
+      
+      // Show setup wizard if first run
+      if (!data.setupComplete) {
+        showSetupWizard();
+      } else {
+        updateAll();
+      }
     }
 
     async function saveData() {
@@ -515,6 +617,87 @@
       } catch (e) {
         console.error('Failed to save data:', e);
       }
+    }
+
+    // ===== FIRST-RUN SETUP WIZARD =====
+    function showSetupWizard() {
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('chat-toggle').classList.add('hidden');
+      
+      const wizard = document.createElement('div');
+      wizard.id = 'setup-wizard';
+      wizard.className = 'max-w-lg mx-auto mt-8';
+      wizard.innerHTML = `
+        <div class="glass rounded-xl p-6 border border-gray-700">
+          <h2 class="text-2xl font-bold text-white mb-2">💰 Budget Tracker Setup</h2>
+          <p class="text-gray-400 mb-6">Let's personalize your app. All data stays on your device.</p>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="text-gray-400 text-sm">Household member 1 (name)</label>
+              <input type="text" id="setup-p1" placeholder="First name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
+            </div>
+            <div>
+              <label class="text-gray-400 text-sm">Household member 2 (name)</label>
+              <input type="text" id="setup-p2" placeholder="First name" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-gray-400 text-sm">Person 1 employer (optional)</label>
+                <input type="text" id="setup-p1emp" placeholder="Employer" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
+              </div>
+              <div>
+                <label class="text-gray-400 text-sm">Person 2 employer (optional)</label>
+                <input type="text" id="setup-p2emp" placeholder="Employer" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
+              </div>
+            </div>
+            <div>
+              <label class="text-gray-400 text-sm">Location (optional)</label>
+              <input type="text" id="setup-location" placeholder="City, State" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
+            </div>
+            <div>
+              <label class="text-gray-400 text-sm">Mortgage lender (optional)</label>
+              <input type="text" id="setup-mortgage" placeholder="e.g. Wells Fargo" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 mt-1 text-white">
+            </div>
+            
+            <div class="border-t border-gray-700 pt-4 mt-4">
+              <p class="text-gray-400 text-sm mb-3">You can add income, debts, and expenses in Settings after setup.</p>
+              <button onclick="completeSetup()" class="w-full bg-blue-600 hover:bg-blue-500 px-4 py-3 rounded-lg font-semibold text-lg transition-colors">Start Tracking →</button>
+              <button onclick="skipSetup()" class="w-full mt-2 text-gray-500 hover:text-gray-400 text-sm py-2">Skip for now</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.querySelector('.min-h-screen') ? document.body.insertBefore(wizard, document.body.firstChild) : document.body.appendChild(wizard);
+    }
+
+    function completeSetup() {
+      data.profile.person1Name = sanitize(document.getElementById('setup-p1').value.trim()) || 'Person 1';
+      data.profile.person2Name = sanitize(document.getElementById('setup-p2').value.trim()) || 'Person 2';
+      data.profile.person1Employer = sanitize(document.getElementById('setup-p1emp').value.trim());
+      data.profile.person2Employer = sanitize(document.getElementById('setup-p2emp').value.trim());
+      data.profile.location = sanitize(document.getElementById('setup-location').value.trim());
+      data.profile.mortgageLender = sanitize(document.getElementById('setup-mortgage').value.trim());
+      data.incomeLabels.person1 = data.profile.person1Name;
+      data.incomeLabels.person2 = data.profile.person2Name;
+      data.setupComplete = true;
+      saveData();
+      
+      const wizard = document.getElementById('setup-wizard');
+      if (wizard) wizard.remove();
+      document.getElementById('app').classList.remove('hidden');
+      document.getElementById('chat-toggle').classList.remove('hidden');
+      updateAll();
+    }
+
+    function skipSetup() {
+      data.setupComplete = true;
+      saveData();
+      const wizard = document.getElementById('setup-wizard');
+      if (wizard) wizard.remove();
+      document.getElementById('app').classList.remove('hidden');
+      document.getElementById('chat-toggle').classList.remove('hidden');
+      updateAll();
     }
 
     function formatCurrency(num) {
@@ -534,7 +717,7 @@
 
     // ===== CALCULATIONS =====
     function getTotalIncome() {
-      return data.income.craig + data.income.judith + data.income.va + data.income.other;
+      return (data.income.person1 || 0) + (data.income.person2 || 0) + (data.income.other1 || 0) + (data.income.other2 || 0);
     }
 
     function getTotalExpenses() {
@@ -578,7 +761,7 @@
 
       document.getElementById('stat-income').textContent = formatCurrency(income);
       document.getElementById('stat-income-breakdown').textContent = 
-        `Craig: ${formatCurrency(data.income.craig)} • Judith: ${formatCurrency(data.income.judith)} • VA: ${formatCurrency(data.income.va)}`;
+        `${p1()}: ${formatCurrency(data.income.person1)} • ${p2()}: ${formatCurrency(data.income.person2)} • ${data.incomeLabels?.other1 || 'Benefits'}: ${formatCurrency(data.income.other1)}`;
       
       const surplusEl = document.getElementById('stat-surplus');
       surplusEl.textContent = formatCurrency(surplus);
@@ -596,16 +779,16 @@
       document.getElementById('heloc-progress').style.width = helocPct + '%';
       document.getElementById('heloc-rate-display').textContent = `${data.heloc.rate}%`;
       document.getElementById('heloc-interest-display').textContent = `Current Monthly Interest: ${formatCurrency(getHelocInterest())}`;
-      document.getElementById('heloc-lender-display').textContent = data.heloc.lender || 'RenoFi';
+      document.getElementById('heloc-lender-display').textContent = data.heloc.lender || 'Not set';
       document.getElementById('heloc-draw-period-display').textContent = `${data.heloc.drawPeriodYears || 2} years`;
       document.getElementById('heloc-repay-display').textContent = `${data.heloc.repaymentYears || 20} years`;
-      const estPayment = data.heloc.monthlyPayment || 2347.13;
-      const drawRatio = data.heloc.drawn / data.heloc.total;
+      const estPayment = data.heloc.monthlyPayment || 0;
+      const drawRatio = data.heloc.total > 0 ? data.heloc.drawn / data.heloc.total : 0;
       document.getElementById('heloc-monthly-payment-display').textContent = data.heloc.drawn > 0 
         ? `Est. Monthly Payment: ${formatCurrency(estPayment * drawRatio)}` 
-        : `Est. Monthly Payment: ${formatCurrency(estPayment)} (at full draw)`;
+        : `Est. Monthly Payment: ${estPayment > 0 ? formatCurrency(estPayment) + ' (at full draw)' : 'Not set'}`;
       const badge = document.getElementById('heloc-status-badge');
-      if (badge) badge.textContent = data.heloc.status || 'Pursuing';
+      if (badge) badge.textContent = data.heloc.status || 'Not Started';
 
       const spent = getRenovationSpent();
       const renoPct = (spent / data.renovation.budget) * 100;
@@ -774,18 +957,413 @@
       } else {
         document.getElementById('emergency-eta').textContent = 'Increase surplus to make progress';
       }
+
+      // Render goals
+      const goalsList = document.getElementById('goals-list');
+      if (!data.goals) data.goals = [];
+      if (data.goals.length === 0) {
+        goalsList.innerHTML = '<p class="text-gray-500 text-sm">No goals set yet. Open the chat and say things like:<br>• "Set a goal to pay off the Sapphire in 12 months"<br>• "I want to save $500/month for emergencies"<br>• "Set a monthly debt payoff goal of $2,000"</p>';
+      } else {
+        goalsList.innerHTML = '';
+        data.goals.forEach((goal, idx) => {
+          const progress = goal.target > 0 ? Math.min(((goal.current || 0) / goal.target) * 100, 100) : 0;
+          const statusColor = goal.status === 'completed' ? 'bg-green-600' : goal.status === 'on-track' ? 'bg-blue-600' : 'bg-yellow-600';
+          goalsList.innerHTML += `
+            <div class="bg-gray-750 rounded-lg p-4 border border-gray-600">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <span class="font-medium text-white">${goal.name}</span>
+                  <span class="text-xs ${statusColor} text-white px-2 py-0.5 rounded-full ml-2">${goal.status || 'active'}</span>
+                </div>
+                <button onclick="removeGoal(${idx})" class="text-red-400 hover:text-red-300 text-xs">✕</button>
+              </div>
+              ${goal.description ? `<p class="text-xs text-gray-400 mb-2">${goal.description}</p>` : ''}
+              <div class="grid grid-cols-2 gap-2 text-xs text-gray-400 mb-2">
+                ${goal.monthlyAmount ? `<span>Monthly: <span class="text-gray-200">${formatCurrency(goal.monthlyAmount)}</span></span>` : ''}
+                ${goal.target ? `<span>Target: <span class="text-gray-200">${formatCurrency(goal.target)}</span></span>` : ''}
+                ${goal.deadline ? `<span>By: <span class="text-gray-200">${goal.deadline}</span></span>` : ''}
+                ${goal.months ? `<span>Timeline: <span class="text-gray-200">${goal.months} months</span></span>` : ''}
+              </div>
+              ${goal.target ? `<div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-green-600 to-emerald-400 progress-bar" style="width: ${progress}%"></div>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">${formatCurrency(goal.current || 0)} of ${formatCurrency(goal.target)} (${progress.toFixed(0)}%)</div>` : ''}
+              <div class="text-xs text-gray-600 mt-1">Set: ${goal.createdDate || 'Unknown'}</div>
+            </div>
+          `;
+        });
+      }
+
+      // Render decisions log
+      const decisionsLog = document.getElementById('decisions-log');
+      if (!data.chatLog) data.chatLog = [];
+      const decisions = data.chatLog.filter(l => l.type === 'decision');
+      if (decisions.length === 0) {
+        decisionsLog.innerHTML = '<p class="text-gray-500 text-sm">No decisions logged yet. The chat assistant will record key decisions here automatically.</p>';
+      } else {
+        decisionsLog.innerHTML = '';
+        decisions.slice(-20).reverse().forEach(d => {
+          decisionsLog.innerHTML += `
+            <div class="bg-gray-750 rounded-lg p-3 border border-gray-600">
+              <div class="flex justify-between">
+                <span class="text-sm text-white">${d.text}</span>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">${d.date || 'Unknown'} ${d.by ? '• ' + d.by : ''}</div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function removeGoal(idx) {
+      if (confirm('Remove this goal?')) {
+        data.goals.splice(idx, 1);
+        saveData();
+        autoSyncToSheets('goal-removed');
+        updateAll();
+      }
+    }
+
+    function clearDecisions() {
+      if (confirm('Clear all decisions from the log?')) {
+        data.chatLog = data.chatLog.filter(l => l.type !== 'decision');
+        saveData();
+        autoSyncToSheets('decisions-cleared');
+        updateAll();
+      }
+    }
+
+    // ===== CHATBOT WRITE HELPERS =====
+    function addGoal(goal) {
+      if (!data.goals) data.goals = [];
+      goal.createdDate = new Date().toLocaleDateString();
+      goal.status = goal.status || 'active';
+      goal.current = goal.current || 0;
+      data.goals.push(goal);
+      saveData();
+      autoSyncToSheets('goal-added');
+      updateAll();
+    }
+
+    function logDecision(text, by) {
+      if (!data.chatLog) data.chatLog = [];
+      data.chatLog.push({
+        type: 'decision',
+        text: text,
+        date: new Date().toLocaleDateString(),
+        by: by || 'Chat Assistant'
+      });
+      saveData();
+      autoSyncToSheets('decision-logged');
+    }
+
+    function autoSyncToSheets(reason) {
+      const url = getSheetsUrl();
+      if (!url) return; // No sheets configured, skip
+      data.lastUpdated = new Date().toISOString();
+      data.lastUpdatedBy = reason || 'auto-sync';
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'save', data: data })
+      }).catch(() => {}); // Silent fail
+    }
+
+    // ===== DOCUMENT UPLOAD & PARSING =====
+    
+    function showUploadStatus(text) {
+      const el = document.getElementById('upload-status');
+      document.getElementById('upload-status-text').textContent = text;
+      el.classList.remove('hidden');
+    }
+    function hideUploadStatus() { document.getElementById('upload-status').classList.add('hidden'); }
+
+    async function handleChatFileUpload(event) {
+      const files = event.target.files;
+      if (!files.length) return;
+      
+      for (const file of files) {
+        showUploadStatus(`📄 Processing: ${file.name}...`);
+        addChatMessage(`📎 Uploading: ${file.name}`, 'user');
+        
+        try {
+          const text = await extractFileText(file);
+          if (!text || text.trim().length < 10) {
+            addChatMessage(`⚠️ Couldn't extract usable text from ${file.name}. Try a CSV or TXT version, or type the key numbers into the chat.`, 'assistant');
+            hideUploadStatus();
+            continue;
+          }
+          
+          const parsed = parseFinancialDocument(text, file.name);
+          
+          if (!data.documents) data.documents = [];
+          const doc = {
+            name: file.name,
+            uploadDate: new Date().toLocaleDateString(),
+            type: parsed.type,
+            summary: parsed.summary,
+            extractedData: parsed.data,
+            rawTextPreview: text.substring(0, 500)
+          };
+          const existingIdx = data.documents.findIndex(d => d.name === file.name);
+          if (existingIdx >= 0) data.documents[existingIdx] = doc;
+          else data.documents.push(doc);
+          
+          // Keep documents list manageable (last 20)
+          if (data.documents.length > 20) data.documents = data.documents.slice(-20);
+          
+          let response = '';
+          if (parsed.applied.length > 0) {
+            response = `✅ Processed "${file.name}" — ${parsed.type}\n\n`;
+            response += `📊 Extracted & Applied:\n`;
+            parsed.applied.forEach(a => { response += `• ${a}\n`; });
+            if (parsed.data.spendingByCategory) {
+              response += `\n💳 Spending Breakdown:\n`;
+              for (const [cat, amt] of Object.entries(parsed.data.spendingByCategory)) {
+                response += `• ${cat}: ${formatCurrency(amt)}\n`;
+              }
+            }
+            if (parsed.summary) response += `\n📝 ${parsed.summary}`;
+          } else {
+            response = `📄 Stored "${file.name}" as context — ${parsed.type}\n\n`;
+            if (parsed.data && Object.keys(parsed.data).length > 0) {
+              response += `📊 Extracted:\n`;
+              for (const [key, val] of Object.entries(parsed.data)) {
+                if (key === 'spendingByCategory' || key === 'transactions' || key === 'headers') continue;
+                response += `• ${key}: ${typeof val === 'number' ? formatCurrency(val) : val}\n`;
+              }
+            }
+            response += `\nThis is now available as context when you ask me questions.`;
+          }
+          
+          logDecision(`Document uploaded: ${file.name} (${parsed.type})`);
+          saveData();
+          autoSyncToSheets('document-upload');
+          updateAll();
+          addChatMessage(response, 'assistant');
+          
+        } catch (err) {
+          addChatMessage(`❌ Error processing ${file.name}: ${err.message}`, 'assistant');
+        }
+        hideUploadStatus();
+      }
+      event.target.value = '';
+    }
+
+    async function extractFileText(file) {
+      const name = file.name.toLowerCase();
+      if (name.endsWith('.csv') || name.endsWith('.txt') || name.endsWith('.json') || file.type.startsWith('text/')) {
+        return await file.text();
+      }
+      if (name.endsWith('.pdf') || file.type === 'application/pdf') {
+        return await extractPdfText(file);
+      }
+      if (file.type.startsWith('image/')) {
+        return `[Image: ${file.name}, ${(file.size/1024).toFixed(0)}KB. For best results, upload a text/CSV version or type the key numbers in chat.]`;
+      }
+      try { return await file.text(); } catch { return ''; }
+    }
+
+    async function extractPdfText(file) {
+      try {
+        const buffer = await file.arrayBuffer();
+        const raw = new TextDecoder('utf-8', {fatal:false}).decode(new Uint8Array(buffer));
+        const chunks = [];
+        const matches = raw.match(/\(([^)]{2,})\)/g);
+        if (matches) matches.forEach(m => {
+          const c = m.slice(1,-1).replace(/\\[nr]/g,' ').replace(/\\\(/g,'(').replace(/\\\)/g,')').replace(/[^\x20-\x7E\n]/g,' ').trim();
+          if (c.length > 1) chunks.push(c);
+        });
+        const text = chunks.join(' ').replace(/\s+/g,' ');
+        return text.length > 20 ? text : `[PDF: ${file.name} — could not extract text. Try CSV/TXT or type key numbers in chat.]`;
+      } catch { return ''; }
+    }
+
+    function parseFinancialDocument(text, fileName) {
+      const t = text.toLowerCase();
+      const result = { type: 'Unknown Document', data: {}, applied: [], summary: '' };
+      
+      // CREDIT CARD STATEMENT
+      if (t.includes('new balance') || t.includes('minimum payment') || t.includes('account summary') || t.includes('payment due date')) {
+        result.type = 'Credit Card Statement';
+        const grab = (re) => { const m = text.match(re); return m ? parseFloat(m[1].replace(/,/g,'')) : null; };
+        const grabStr = (re) => { const m = text.match(re); return m ? m[1].trim() : null; };
+        
+        result.data.balance = grab(/new\s*balance[:\s]*\$?([\d,]+\.?\d*)/i);
+        result.data.minimumPayment = grab(/minimum\s*payment[^:]*[:\s]*\$?([\d,]+\.?\d*)/i);
+        result.data.dueDate = grabStr(/(?:payment\s*)?due\s*date[:\s]*([\d\/]+)/i);
+        result.data.apr = grab(/purchases?\s+(\d+\.\d+)%/i) || grab(/([\d.]+)%\s*\(v\)/i);
+        result.data.interestCharged = grab(/(?:interest\s*charged?|purchase\s*interest)[:\s]*\+?\$?([\d,]+\.?\d*)/i);
+        result.data.creditLimit = grab(/credit\s*(?:access\s*)?line[:\s]*\$?([\d,]+)/i);
+        result.data.previousBalance = grab(/previous\s*balance[:\s]*\$?([\d,]+\.?\d*)/i);
+        result.data.purchases = grab(/purchases[:\s]*\+?\$?([\d,]+\.?\d*)/i);
+        
+        // Detect card
+        let cardName = 'Unknown Card';
+        if (t.includes('sapphire')) cardName = 'Chase Sapphire Reserve';
+        else if (t.includes('amazon') || t.includes('prime visa')) cardName = 'Chase Amazon Prime Visa';
+        else if (t.includes('freedom flex') || t.includes('freedom unlimited')) cardName = 'Chase Freedom';
+        else if (t.includes('discover')) cardName = 'Discover';
+        else if (t.includes('amex') || t.includes('american express')) cardName = 'American Express';
+        result.data.cardName = cardName;
+        
+        // Auto-apply
+        const match = data.creditCards.find(c => c.name === cardName || c.name.toLowerCase().includes(cardName.toLowerCase().split(' ').pop()));
+        if (match && result.data.balance) {
+          match.balance = result.data.balance;
+          if (result.data.minimumPayment) match.minimum = result.data.minimumPayment;
+          if (result.data.apr) match.apr = result.data.apr;
+          if (result.data.dueDate) match.dueDate = result.data.dueDate;
+          if (result.data.interestCharged) match.lastInterest = result.data.interestCharged;
+          if (result.data.creditLimit) match.limit = result.data.creditLimit;
+          match.lastStmtDate = new Date().toLocaleDateString();
+          result.applied.push(`Updated ${match.name}: balance → ${formatCurrency(result.data.balance)}`);
+          if (result.data.interestCharged) result.applied.push(`Interest: ${formatCurrency(result.data.interestCharged)}`);
+          if (result.data.dueDate) result.applied.push(`Due: ${result.data.dueDate}`);
+        } else if (result.data.balance) {
+          data.creditCards.push({
+            name: cardName, balance: result.data.balance, apr: result.data.apr || 0,
+            minimum: result.data.minimumPayment || 0, limit: result.data.creditLimit || 0,
+            dueDate: result.data.dueDate || '', lastInterest: result.data.interestCharged || 0,
+            lastStmtDate: new Date().toLocaleDateString()
+          });
+          result.applied.push(`Added new card: ${cardName} — ${formatCurrency(result.data.balance)}`);
+        }
+        
+        // Categorize transactions
+        const txns = extractTransactions(text);
+        if (txns.length > 0) {
+          result.data.transactionCount = txns.length;
+          result.data.spendingByCategory = categorizeTransactions(txns);
+        }
+        
+        result.summary = `${cardName}: ${formatCurrency(result.data.balance||0)} balance, ${formatCurrency(result.data.interestCharged||0)} interest`;
+      }
+      
+      // UTILITY / BILL
+      else if (t.includes('amount due') || t.includes('billing statement') || t.includes('pse&g') || t.includes('xfinity') || t.includes('comcast') || t.includes('water bill')) {
+        result.type = 'Utility / Bill';
+        const amtM = text.match(/(?:amount|total|balance)\s*due[:\s]*\$?([\d,]+\.?\d*)/i);
+        if (amtM) result.data.amountDue = parseFloat(amtM[1].replace(/,/g,''));
+        
+        let utilName = 'Unknown Bill';
+        if (t.includes('pse&g') || t.includes('pseg')) utilName = 'PSE&G';
+        else if (t.includes('american water')) utilName = 'American Water';
+        else if (t.includes('xfinity') || t.includes('comcast')) utilName = 'Xfinity';
+        else if (t.includes('usaa')) utilName = 'USAA Insurance';
+        result.data.billName = utilName;
+        
+        if (result.data.amountDue && data.expenses[utilName]) {
+          data.expenses[utilName] = result.data.amountDue;
+          result.applied.push(`Updated ${utilName}: ${formatCurrency(result.data.amountDue)}/mo`);
+        }
+        result.summary = `${utilName}: ${formatCurrency(result.data.amountDue||0)}`;
+      }
+      
+      // MORTGAGE
+      else if (t.includes('mortgage') || t.includes('freedom mortgage') || t.includes('principal balance') || t.includes('escrow')) {
+        result.type = 'Mortgage Statement';
+        const balM = text.match(/(?:principal|unpaid)\s*balance[:\s]*\$?([\d,]+\.?\d*)/i);
+        const rateM = text.match(/(?:interest\s*)?rate[:\s]*([\d.]+)%/i);
+        if (balM) { result.data.balance = parseFloat(balM[1].replace(/,/g,'')); data.mortgage.balance = result.data.balance; result.applied.push(`Mortgage balance: ${formatCurrency(result.data.balance)}`); }
+        if (rateM) { result.data.rate = parseFloat(rateM[1]); data.mortgage.rate = result.data.rate; result.applied.push(`Mortgage rate: ${result.data.rate}%`); }
+        result.summary = `Mortgage: ${formatCurrency(result.data.balance||0)}, ${result.data.rate||'?'}%`;
+      }
+      
+      // PAY STUB
+      else if (t.includes('gross pay') || t.includes('net pay') || t.includes('earnings') || t.includes('pay stub') || t.includes('ytd')) {
+        result.type = 'Pay Stub';
+        const grossM = text.match(/gross\s*pay[:\s]*\$?([\d,]+\.?\d*)/i);
+        const netM = text.match(/net\s*pay[:\s]*\$?([\d,]+\.?\d*)/i);
+        if (grossM) result.data.grossPay = parseFloat(grossM[1].replace(/,/g,''));
+        if (netM) result.data.netPay = parseFloat(netM[1].replace(/,/g,''));
+        result.summary = `Pay: Gross ${formatCurrency(result.data.grossPay||0)}, Net ${formatCurrency(result.data.netPay||0)}`;
+      }
+      
+      // CSV
+      else if (fileName.endsWith('.csv')) {
+        result.type = 'CSV Data';
+        const lines = text.trim().split('\n');
+        result.data.headers = lines[0].split(',').map(h => h.trim().replace(/"/g,''));
+        result.data.rowCount = lines.length - 1;
+        result.summary = `CSV: ${result.data.rowCount} rows, columns: ${result.data.headers.join(', ')}`;
+      }
+      
+      // GENERIC
+      else {
+        result.type = 'General Document';
+        const amounts = text.match(/\$[\d,]+\.?\d*/g);
+        if (amounts) {
+          result.data.amountsFound = amounts.length;
+          result.data.amounts = amounts.slice(0, 10).map(a => parseFloat(a.replace(/[$,]/g,'')));
+        }
+        result.summary = `Document: ${text.length} chars${amounts ? `, ${amounts.length} dollar amounts` : ''}`;
+      }
+      
+      return result;
+    }
+
+    function extractTransactions(text) {
+      const txns = [];
+      const lines = text.split(/\n/);
+      lines.forEach(line => {
+        const m = line.match(/(\d{2}\/\d{2})\s+(.+?)\s+(\d+\.\d{2})\s*$/);
+        if (m) txns.push({ date: m[1], merchant: m[2].trim(), amount: parseFloat(m[3]) });
+      });
+      return txns;
+    }
+
+    function categorizeTransactions(txns) {
+      const cats = {};
+      const rules = [
+        ['Dining', /doordash|uber\s*eat|grubhub|restaurant|pizza|cafe|grill|starbucks|dunkin|chick-?fil|mcdonald|chickies|cava|wawa|two fish|brew|honey post|johnny long|ragazzi/i],
+        ['Groceries', /shoprite|costco|wegmans|sprouts|trader joe|walmart|wal-?mart|target|instacart|whole food/i],
+        ['Gas/Fuel', /fuel|gas|speedy|royal farm|7-?eleven|shell|wawa.*gas/i],
+        ['Medical/Health', /barber|derm|pharmacy|walgreens|cvs|imaging|chir|heart.*paw|strive|doctor|dental/i],
+        ['Parking', /parking|honk|laz park|premium park/i],
+        ['Entertainment', /aquarium|lego|adventure|movie|concert|museum|zoo/i],
+        ['Shopping', /dsw|ikea|ellaola|little sleep|amazon|chewy|mail room/i],
+        ['Subscriptions', /xfinity|prime|netflix|spotify|hulu|disney|apple.*montessori/i],
+        ['Transport', /uber|lyft|ezpass|transit/i]
+      ];
+      txns.forEach(t => {
+        let matched = false;
+        for (const [cat, re] of rules) {
+          if (re.test(t.merchant)) { cats[cat] = (cats[cat]||0) + t.amount; matched = true; break; }
+        }
+        if (!matched) cats['Other'] = (cats['Other']||0) + t.amount;
+      });
+      return cats;
+    }
+
+    function getDocumentContext() {
+      if (!data.documents || data.documents.length === 0) return '';
+      let ctx = '\nUploaded docs: ';
+      data.documents.forEach(doc => {
+        ctx += `${doc.name} (${doc.type}): ${doc.summary}. `;
+      });
+      return ctx;
     }
 
     function updateSettingsTab() {
-      document.getElementById('setting-craig-income').value = data.income.craig;
-      document.getElementById('setting-judith-income').value = data.income.judith;
-      document.getElementById('setting-va-income').value = data.income.va;
-      document.getElementById('setting-other-income').value = data.income.other;
+      document.getElementById('setting-p1-income').value = data.income.person1;
+      document.getElementById('setting-p2-income').value = data.income.person2;
+      document.getElementById('setting-va-income').value = data.income.other1;
+      document.getElementById('setting-other-income').value = data.income.other2;
+      // Dynamic labels
+      document.getElementById('label-p1-income').textContent = `${p1()} Net Monthly${p1Emp()}`;
+      document.getElementById('label-p2-income').textContent = `${p2()} Net Monthly${p2Emp()}`;
+      if (data.heloc.lender) document.getElementById('heloc-settings-title').textContent = `🏠 HELOC Settings (${data.heloc.lender})`;
+      document.getElementById('mortgage-title').textContent = `🏡 Mortgage${data.profile?.mortgageLender ? ' (' + data.profile.mortgageLender + ')' : ''}`;
       document.getElementById('setting-heloc-total').value = data.heloc.total;
       document.getElementById('setting-heloc-rate').value = data.heloc.rate;
       document.getElementById('setting-heloc-draw-period').value = data.heloc.drawPeriodYears;
       document.getElementById('setting-heloc-repay-period').value = data.heloc.repaymentYears || 20;
       document.getElementById('setting-heloc-payment').value = data.heloc.monthlyPayment || 2347.13;
+      // Load saved Sheets URL
+      const savedSheetsUrl = localStorage.getItem(SHEETS_URL_KEY) || '';
+      document.getElementById('setting-sheets-url').value = savedSheetsUrl;
     }
 
     let cashFlowChart, renovationChart;
@@ -936,10 +1514,10 @@
     }
 
     function saveIncomeSettings() {
-      data.income.craig = parseFloat(document.getElementById('setting-craig-income').value) || 0;
-      data.income.judith = parseFloat(document.getElementById('setting-judith-income').value) || 0;
-      data.income.va = parseFloat(document.getElementById('setting-va-income').value) || 0;
-      data.income.other = parseFloat(document.getElementById('setting-other-income').value) || 0;
+      data.income.person1 = parseFloat(document.getElementById('setting-p1-income').value) || 0;
+      data.income.person2 = parseFloat(document.getElementById('setting-p2-income').value) || 0;
+      data.income.other1 = parseFloat(document.getElementById('setting-va-income').value) || 0;
+      data.income.other2 = parseFloat(document.getElementById('setting-other-income').value) || 0;
       saveData();
       updateAll();
       alert('Income settings saved!');
@@ -961,8 +1539,114 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'day-family-budget-' + new Date().toISOString().split('T')[0] + '.json';
+      a.download = 'budget-export-' + new Date().toISOString().split('T')[0] + '.json';
       a.click();
+    }
+
+    function shareViaText() {
+      const summary = generateSummary();
+      if (navigator.share) {
+        navigator.share({
+          title: 'Budget Update',
+          text: summary,
+        }).catch(() => {});
+      } else {
+        const smsBody = encodeURIComponent(summary);
+        window.open('sms:?&body=' + smsBody);
+      }
+    }
+
+    function generateSummary() {
+      const income = getTotalIncome();
+      const ccDebt = getTotalCreditCardDebt();
+      const surplus = getMonthlySurplus();
+      let s = `💰 Budget Update (${new Date().toLocaleDateString()})\n\n`;
+      s += `Monthly Income: ${formatCurrency(income)}\n`;
+      s += `Monthly Surplus: ${formatCurrency(surplus)}\n`;
+      s += `Credit Card Debt: ${formatCurrency(ccDebt)}\n`;
+      data.creditCards.forEach(c => {
+        s += `  • ${c.name}: ${formatCurrency(c.balance)} (${c.apr}%)\n`;
+      });
+      s += `HELOC Drawn: ${formatCurrency(data.heloc.drawn)} / ${formatCurrency(data.heloc.total)}\n`;
+      s += `Emergency Fund: ${formatCurrency(data.emergencyFund.current)} / ${formatCurrency(data.emergencyFund.target)}\n`;
+      if (data.profile?.appUrl) s += `\nOpen app: ${data.profile.appUrl}`;
+      return s;
+    }
+
+    // ===== GOOGLE SHEETS SYNC =====
+    const SHEETS_URL_KEY = 'dayBudgetSheetsUrl';
+
+    function getSheetsUrl() {
+      return document.getElementById('setting-sheets-url').value || localStorage.getItem(SHEETS_URL_KEY) || '';
+    }
+
+    function saveSheetsUrl() {
+      const url = document.getElementById('setting-sheets-url').value;
+      if (url) localStorage.setItem(SHEETS_URL_KEY, url);
+    }
+
+    async function syncToSheets() {
+      const url = getSheetsUrl();
+      if (!url) return alert('Please paste your Google Sheets Web App URL in Settings first.');
+      saveSheetsUrl();
+
+      const btn = event.target;
+      btn.textContent = '⏳ Pushing...';
+      btn.disabled = true;
+
+      try {
+        data.lastUpdated = new Date().toISOString();
+        data.lastUpdatedBy = 'manual-push';
+        saveData();
+
+        const response = await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'save', data: data })
+        });
+
+        btn.textContent = '✅ Pushed!';
+        setTimeout(() => { btn.textContent = '☁️ Push to Sheets'; btn.disabled = false; }, 2000);
+      } catch (err) {
+        alert('Sync failed: ' + err.message);
+        btn.textContent = '☁️ Push to Sheets';
+        btn.disabled = false;
+      }
+    }
+
+    async function syncFromSheets() {
+      const url = getSheetsUrl();
+      if (!url) return alert('Please paste your Google Sheets Web App URL in Settings first.');
+      saveSheetsUrl();
+
+      const btn = event.target;
+      btn.textContent = '⏳ Pulling...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(url + '?action=load&t=' + Date.now());
+        const result = await response.json();
+
+        if (result && result.data && typeof result.data === 'object' && result.data.income) {
+          data = migrateData(result.data);
+          saveData();
+          updateAll();
+          btn.textContent = '✅ Pulled!';
+          const updated = data.lastUpdated ? new Date(data.lastUpdated).toLocaleString() : 'Unknown';
+          setTimeout(() => { 
+            btn.textContent = '⬇️ Pull from Sheets'; 
+            btn.disabled = false;
+            alert('Data synced! Last updated: ' + updated);
+          }, 1000);
+        } else {
+          throw new Error('No data found in sheet');
+        }
+      } catch (err) {
+        alert('Pull failed: ' + err.message + '\nMake sure the Sheets URL is correct.');
+        btn.textContent = '⬇️ Pull from Sheets';
+        btn.disabled = false;
+      }
     }
 
     function importData(event) {
@@ -973,7 +1657,11 @@
       reader.onload = function(e) {
         try {
           const imported = JSON.parse(e.target.result);
-          data = imported;
+          // Validate basic structure
+          if (typeof imported !== 'object' || !imported.income || !imported.expenses) {
+            throw new Error('Invalid budget data format');
+          }
+          data = migrateData(imported);
           saveData();
           updateAll();
           alert('Data imported successfully!');
@@ -994,6 +1682,8 @@
     }
 
     function updateAll() {
+      // Update dynamic header
+      document.getElementById('app-subtitle').textContent = subtitle();
       updateDashboard();
       updateRenovationTab();
       updateDebtsTab();
@@ -1022,7 +1712,7 @@
       banner.id = 'install-banner';
       banner.className = 'fixed top-0 left-0 right-0 bg-blue-600 text-white px-4 py-3 flex items-center justify-between z-50';
       banner.innerHTML = `
-        <span class="text-sm font-medium">📱 Install Day Budget as an app on your device!</span>
+        <span class="text-sm font-medium">📱 Install Budget Tracker as an app on your device!</span>
         <div class="flex gap-2">
           <button onclick="installPWA()" class="bg-white text-blue-600 px-3 py-1 rounded-lg text-sm font-bold">Install</button>
           <button onclick="document.getElementById('install-banner').remove()" class="text-blue-200 hover:text-white px-2">✕</button>
@@ -1080,6 +1770,7 @@
     function addChatMessage(text, role) {
       const container = document.getElementById('chat-messages');
       const isUser = role === 'user';
+      const safeText = sanitize(text);
       
       const html = `
         <div class="flex gap-3 ${isUser ? 'flex-row-reverse' : ''}">
@@ -1090,7 +1781,7 @@
             }
           </div>
           <div class="max-w-[80%] rounded-xl px-4 py-2 ${isUser ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-100'}">
-            <p class="text-sm whitespace-pre-wrap">${text}</p>
+            <p class="text-sm whitespace-pre-wrap">${safeText}</p>
           </div>
         </div>
       `;
@@ -1102,8 +1793,12 @@
     function processQuestion(question) {
       const q = question.toLowerCase();
       
+      // ===== COMPUTED VALUES =====
       const income = getTotalIncome();
-      const expenses = getTotalObligations();
+      const fixedExpenses = getTotalExpenses();
+      const ccMinimums = getCreditCardMinimums();
+      const helocInterest = getHelocInterest();
+      const totalObligations = getTotalObligations();
       const surplus = getMonthlySurplus();
       const ccDebt = getTotalCreditCardDebt();
       const slDebt = getTotalStudentLoans();
@@ -1113,74 +1808,506 @@
       const helocRemaining = data.heloc.total - data.heloc.drawn;
       const emergencyProgress = (data.emergencyFund.current / data.emergencyFund.target) * 100;
       const monthsToEmergency = surplus > 0 ? Math.ceil((data.emergencyFund.target - data.emergencyFund.current) / surplus) : Infinity;
+      
+      // Credit card interest costs
+      const totalCCInterest = data.creditCards.reduce((a, c) => a + (c.lastInterest || (c.balance * c.apr / 100 / 12)), 0);
+      const sapphire = data.creditCards.find(c => c.name.toLowerCase().includes('sapphire'));
+      const amazon = data.creditCards.find(c => c.name.toLowerCase().includes('amazon'));
+      
+      // HELOC affordability
+      const helocPayment = data.heloc.monthlyPayment || 2347.13;
+      const helocDrawPeriod = data.heloc.drawPeriodYears || 2;
+      const helocRepayment = data.heloc.repaymentYears || 20;
+      const helocRate = data.heloc.rate || 7.625;
+      const helocLender = data.heloc.lender || 'RenoFi';
+      const surplusAfterHeloc = surplus - helocPayment;
 
-      if (q.includes('income') || q.includes('make') || q.includes('earn')) {
-        return `Your combined monthly income is ${formatCurrency(income)}:\n\n• Craig (Comcast): ${formatCurrency(data.income.craig)}\n• Judith (Signature Science): ${formatCurrency(data.income.judith)}\n• VA Benefits: ${formatCurrency(data.income.va)}${data.income.other > 0 ? `\n• Other: ${formatCurrency(data.income.other)}` : ''}`;
-      }
-
-      if (q.includes('surplus') || q.includes('left over') || q.includes('leftover') || q.includes('extra')) {
-        if (surplus >= 0) {
-          return `Your monthly surplus is ${formatCurrency(surplus)}.\n\nThis is what's left after all expenses (${formatCurrency(expenses)}) are subtracted from your income (${formatCurrency(income)}).\n\nYou could use this for:\n• Extra debt payments\n• Building your emergency fund\n• Saving for the renovation`;
-        } else {
-          return `⚠️ You're currently running a deficit of ${formatCurrency(Math.abs(surplus))} per month.\n\nYour expenses (${formatCurrency(expenses)}) exceed your income (${formatCurrency(income)}).\n\nConsider reviewing your expenses or finding ways to increase income.`;
+      // ===== WRITE ACTIONS: GOAL SETTING =====
+      
+      // "Set a goal to pay off Sapphire in 12 months"
+      if (q.includes('set') && q.includes('goal') || q.includes('i want to') || q.includes("let's") && (q.includes('goal') || q.includes('plan') || q.includes('target') || q.includes('save') || q.includes('pay'))) {
+        
+        // Pay off a specific card
+        const cardMatch = q.match(/pay\s*off\s*(sapphire|amazon|credit|card)/i);
+        const monthsMatch = q.match(/(\d+)\s*month/);
+        const amountMatch = q.match(/\$?([\d,]+)/);
+        
+        if (cardMatch || (q.includes('pay') && (q.includes('sapphire') || q.includes('amazon')))) {
+          const targetCard = q.includes('sapphire') ? sapphire : q.includes('amazon') ? amazon : null;
+          if (targetCard) {
+            const months = monthsMatch ? parseInt(monthsMatch[1]) : null;
+            const monthlyNeeded = months ? targetCard.balance / months : null;
+            
+            let r = `📝 Let me build a payoff plan for the ${targetCard.name}:\n\n`;
+            r += `Current balance: ${formatCurrency(targetCard.balance)}\n`;
+            r += `Current minimum: ${formatCurrency(targetCard.minimum)}\n`;
+            r += `Monthly interest: ~${formatCurrency(targetCard.lastInterest || (targetCard.balance * targetCard.apr / 100 / 12))}\n\n`;
+            
+            if (months) {
+              const totalWithInterest = targetCard.balance * (1 + (targetCard.apr / 100 / 12 * months * 0.5)); // rough estimate
+              const realMonthly = totalWithInterest / months;
+              r += `To pay off in ${months} months: ~${formatCurrency(realMonthly)}/mo\n`;
+              r += `Your surplus is ${formatCurrency(surplus)}/mo\n\n`;
+              
+              if (realMonthly <= surplus + targetCard.minimum) {
+                r += `✅ This is doable! I'll save this goal.\n`;
+                addGoal({
+                  name: `Pay off ${targetCard.name}`,
+                  description: `Eliminate ${formatCurrency(targetCard.balance)} balance in ${months} months at ~${formatCurrency(realMonthly)}/mo`,
+                  target: targetCard.balance,
+                  current: 0,
+                  monthlyAmount: realMonthly,
+                  months: months,
+                  category: 'debt-payoff'
+                });
+                logDecision(`Goal set: Pay off ${targetCard.name} (${formatCurrency(targetCard.balance)}) in ${months} months at ~${formatCurrency(realMonthly)}/mo`);
+                r += `\n✅ Goal saved to your Goals tab and synced to Google Sheets!`;
+              } else {
+                const realisticMonths = Math.ceil(targetCard.balance / (surplus * 0.8));
+                r += `⚠️ That's tight — ${formatCurrency(realMonthly)}/mo vs your ${formatCurrency(surplus)} surplus.\n\n`;
+                r += `A more realistic timeline: ~${realisticMonths} months putting 80% of surplus toward it.\n\n`;
+                r += `Want me to save the ${realisticMonths}-month plan instead? Just say "yes, save that" or pick your own timeline.`;
+              }
+            } else {
+              // No months specified — suggest options
+              const fast = Math.ceil(targetCard.balance / (surplus * 0.9));
+              const moderate = Math.ceil(targetCard.balance / (surplus * 0.5));
+              r += `Options:\n`;
+              r += `• Aggressive (90% of surplus): ~${fast} months at ${formatCurrency(surplus * 0.9)}/mo\n`;
+              r += `• Moderate (50% of surplus): ~${moderate} months at ${formatCurrency(surplus * 0.5)}/mo\n`;
+              r += `• Minimum payments only: ~${Math.ceil(targetCard.balance / targetCard.minimum)} months\n\n`;
+              r += `Tell me which you prefer, like "set a goal to pay off ${q.includes('sapphire') ? 'Sapphire' : 'Amazon'} in ${fast} months"`;
+            }
+            return r;
+          }
         }
+
+        // Save X per month
+        const saveMatch = q.match(/save\s*\$?([\d,]+)\s*(per|a|each|\/)\s*month/i) || q.match(/\$?([\d,]+)\s*(per|a|each|\/)\s*month.*sav/i);
+        if (saveMatch || (q.includes('save') && amountMatch)) {
+          const monthlyAmt = parseFloat((saveMatch ? saveMatch[1] : amountMatch[1]).replace(/,/g, ''));
+          const forWhat = q.includes('emergency') ? 'emergency fund' : q.includes('reno') ? 'renovation' : 'savings';
+          
+          let r = `📝 Setting savings goal: ${formatCurrency(monthlyAmt)}/month for ${forWhat}\n\n`;
+          r += `Your current surplus: ${formatCurrency(surplus)}\n`;
+          
+          if (monthlyAmt <= surplus) {
+            r += `✅ That fits within your surplus!\n\n`;
+            const target = forWhat === 'emergency fund' ? data.emergencyFund.target : monthlyAmt * 12;
+            addGoal({
+              name: `Save ${formatCurrency(monthlyAmt)}/mo for ${forWhat}`,
+              description: `Monthly contribution of ${formatCurrency(monthlyAmt)} toward ${forWhat}`,
+              target: target,
+              current: 0,
+              monthlyAmount: monthlyAmt,
+              months: Math.ceil(target / monthlyAmt),
+              category: 'savings'
+            });
+            logDecision(`Savings goal set: ${formatCurrency(monthlyAmt)}/mo toward ${forWhat}`);
+            r += `Goal saved! Check the Goals tab. ${getSheetsUrl() ? 'Synced to Google Sheets ☁️' : ''}`;
+          } else {
+            r += `⚠️ That's more than your surplus. Max recommended: ${formatCurrency(surplus * 0.8)}/mo.\n`;
+            r += `Want me to set it at ${formatCurrency(Math.floor(surplus * 0.8 / 50) * 50)}/mo instead?`;
+          }
+          return r;
+        }
+
+        // Monthly debt payoff goal
+        const debtGoalMatch = q.match(/debt.*\$?([\d,]+)/i) || q.match(/\$?([\d,]+).*debt/i);
+        if (q.includes('debt') && (debtGoalMatch || amountMatch)) {
+          const monthlyAmt = parseFloat((debtGoalMatch ? debtGoalMatch[1] : amountMatch[1]).replace(/,/g, ''));
+          let r = `📝 Monthly Debt Payoff Goal: ${formatCurrency(monthlyAmt)}/mo\n\n`;
+          r += `Current CC minimums: ${formatCurrency(ccMinimums)}\n`;
+          r += `Your surplus: ${formatCurrency(surplus)}\n`;
+          const extraOverMin = monthlyAmt - ccMinimums;
+          r += `Extra over minimums: ${formatCurrency(extraOverMin)}\n\n`;
+          
+          if (extraOverMin <= surplus) {
+            const monthsToPayoff = Math.ceil(ccDebt / monthlyAmt);
+            r += `At ${formatCurrency(monthlyAmt)}/mo total toward CC debt, you'd be free in ~${monthsToPayoff} months!\n\n`;
+            addGoal({
+              name: `Pay ${formatCurrency(monthlyAmt)}/mo toward credit card debt`,
+              description: `${formatCurrency(ccMinimums)} minimums + ${formatCurrency(extraOverMin)} extra. Target: eliminate ${formatCurrency(ccDebt)} in ~${monthsToPayoff} months.`,
+              target: ccDebt,
+              current: 0,
+              monthlyAmount: monthlyAmt,
+              months: monthsToPayoff,
+              category: 'debt-payoff'
+            });
+            logDecision(`Debt payoff goal: ${formatCurrency(monthlyAmt)}/mo toward CC debt. Est. payoff in ~${monthsToPayoff} months.`);
+            r += `✅ Goal saved! ${getSheetsUrl() ? 'Synced to Sheets ☁️' : ''}`;
+          } else {
+            r += `⚠️ The extra ${formatCurrency(extraOverMin)} over minimums exceeds your ${formatCurrency(surplus)} surplus.\n`;
+            r += `Realistic max: ${formatCurrency(ccMinimums + surplus)}/mo total.`;
+          }
+          return r;
+        }
+
+        // Budget / spending limit goal
+        if (q.includes('cut') || q.includes('limit') || q.includes('budget') || q.includes('reduce') || q.includes('spend')) {
+          const category = q.includes('dining') || q.includes('food') || q.includes('eating') ? 'dining/food' : 
+                          q.includes('gas') || q.includes('fuel') ? 'gas/fuel' :
+                          q.includes('shopping') ? 'shopping' :
+                          q.includes('entertainment') ? 'entertainment' : 'spending';
+          const limitAmt = amountMatch ? parseFloat(amountMatch[1].replace(/,/g, '')) : null;
+          
+          if (limitAmt) {
+            addGoal({
+              name: `Limit ${category} to ${formatCurrency(limitAmt)}/mo`,
+              description: `Monthly budget cap for ${category}`,
+              target: limitAmt,
+              current: 0,
+              monthlyAmount: limitAmt,
+              category: 'budget-limit'
+            });
+            logDecision(`Budget limit set: ${category} capped at ${formatCurrency(limitAmt)}/mo`);
+            return `✅ Budget goal saved: Keep ${category} under ${formatCurrency(limitAmt)}/mo.\n\nThis is now tracked in your Goals tab. ${getSheetsUrl() ? 'Synced to Sheets ☁️' : ''}\n\n💡 Upload your latest credit card statement to see exactly where dining and delivery spending goes!`;
+          }
+          return `What monthly limit do you want for ${category}? For example: "Limit dining to $400/month"`;
+        }
+
+        // Generic goal
+        if (amountMatch) {
+          const amount = parseFloat(amountMatch[1].replace(/,/g, ''));
+          addGoal({
+            name: question,
+            description: `Goal amount: ${formatCurrency(amount)}`,
+            target: amount,
+            current: 0,
+            category: 'custom'
+          });
+          logDecision(question);
+          return `✅ Goal saved: "${question}"\n\nTarget: ${formatCurrency(amount)}\n\nYou can view and track this in the Goals tab. ${getSheetsUrl() ? 'Synced to Sheets ☁️' : ''}`;
+        }
+
+        return `I can set goals for you! Try:\n\n• "Set a goal to pay off the Sapphire in 12 months"\n• "I want to save $500/month for emergencies"\n• "Set a monthly debt payoff goal of $3,000"\n• "Let's limit dining to $400/month"\n• "Set a goal to save $10,000 by December"\n\nInclude a dollar amount and I'll build the plan!`;
       }
 
+      // ===== CONFIRM / YES (follow-up to suggestions) =====
+      if (q === 'yes' || q === 'yes save that' || q === 'save that' || q === 'do it' || q === 'sounds good' || q === 'ok' || q === 'yes please') {
+        return `Got it! To confirm what to save, please repeat the goal with details. For example:\n• "Set a goal to pay off Sapphire in 18 months"\n• "Save $500/month for emergencies"\n\nI need the specifics to save it properly.`;
+      }
+
+      // ===== UPDATE GOAL PROGRESS =====
+      if ((q.includes('update') || q.includes('progress') || q.includes('paid') || q.includes('saved')) && (q.includes('goal') || q.includes('toward'))) {
+        const amtMatch = q.match(/\$?([\d,]+)/);
+        if (amtMatch && data.goals && data.goals.length > 0) {
+          const amount = parseFloat(amtMatch[1].replace(/,/g, ''));
+          // Try to match to a goal
+          let matchedGoal = null;
+          if (q.includes('sapphire')) matchedGoal = data.goals.find(g => g.name.toLowerCase().includes('sapphire'));
+          else if (q.includes('amazon')) matchedGoal = data.goals.find(g => g.name.toLowerCase().includes('amazon'));
+          else if (q.includes('emergency') || q.includes('saving')) matchedGoal = data.goals.find(g => g.category === 'savings');
+          else if (q.includes('debt')) matchedGoal = data.goals.find(g => g.category === 'debt-payoff');
+          else matchedGoal = data.goals[0]; // default to first goal
+          
+          if (matchedGoal) {
+            matchedGoal.current = (matchedGoal.current || 0) + amount;
+            if (matchedGoal.current >= matchedGoal.target) matchedGoal.status = 'completed';
+            else matchedGoal.status = 'on-track';
+            saveData();
+            autoSyncToSheets('goal-progress');
+            updateAll();
+            const pct = ((matchedGoal.current / matchedGoal.target) * 100).toFixed(0);
+            logDecision(`Progress: ${formatCurrency(amount)} applied to "${matchedGoal.name}" — now at ${pct}%`);
+            return `✅ Updated "${matchedGoal.name}"!\n\nProgress: ${formatCurrency(matchedGoal.current)} / ${formatCurrency(matchedGoal.target)} (${pct}%)\n${matchedGoal.current >= matchedGoal.target ? '\n🎉 GOAL COMPLETED!' : `\nRemaining: ${formatCurrency(matchedGoal.target - matchedGoal.current)}`}\n\n${getSheetsUrl() ? 'Synced to Sheets ☁️' : ''}`;
+          }
+        }
+        return `To update progress, include the amount and goal name. For example:\n• "Paid $500 toward Sapphire goal"\n• "Saved $200 toward emergency fund goal"`;
+      }
+
+      // ===== LOG A DECISION =====
+      if (q.includes('decide') || q.includes('decision') || q.includes('agreed') || q.includes('we\'re going to') || q.includes('let\'s do') || q.includes('log') || q.includes('note')) {
+        if (q.length > 15) { // meaningful content
+          logDecision(question);
+          updateAll();
+          return `📝 Decision logged: "${question}"\n\nThis is saved in your Goals tab under Decisions Log${getSheetsUrl() ? ' and synced to Google Sheets ☁️' : ''}.\n\nBoth of you can see it!`;
+        }
+        return `Tell me what you've decided and I'll log it. For example:\n• "We decided to put the kitchen reno on hold until March"\n• "Agreed to pay $3,000/mo toward credit cards"\n• "Note: Expecting a raise in April"`;
+      }
+
+      // ===== SHOW GOALS =====
+      if (q.includes('goal') && (q.includes('show') || q.includes('list') || q.includes('what') || q.includes('my') || q.includes('our'))) {
+        if (!data.goals || data.goals.length === 0) {
+          return `You don't have any goals set yet! I can help you create some. Try:\n\n• "Set a goal to pay off Sapphire in 12 months"\n• "I want to save $500/month"\n• "Set a debt payoff goal of $3,000/month"`;
+        }
+        let r = `📋 Your Goals:\n\n`;
+        data.goals.forEach((g, i) => {
+          const pct = g.target > 0 ? ((g.current || 0) / g.target * 100).toFixed(0) : 0;
+          r += `${i + 1}. ${g.name}\n`;
+          r += `   ${g.target ? `${formatCurrency(g.current || 0)} / ${formatCurrency(g.target)} (${pct}%)` : ''}\n`;
+          if (g.monthlyAmount) r += `   ${formatCurrency(g.monthlyAmount)}/mo\n`;
+          r += `   Status: ${g.status || 'active'}\n\n`;
+        });
+        r += `Update progress by saying "Paid $X toward [goal name]"`;
+        return r;
+      }
+
+      // ===== DOCUMENTS / UPLOADS / SPENDING BREAKDOWN =====
+      if (q.includes('document') || q.includes('upload') || q.includes('file') && (q.includes('show') || q.includes('list') || q.includes('what'))) {
+        if (!data.documents || data.documents.length === 0) {
+          return `No documents uploaded yet. Tap the 📎 button to upload:\n\n• Credit card statements (PDF/text)\n• Utility bills\n• Pay stubs\n• Mortgage statements\n• Bank statements\n• Any CSV/text with financial data\n\nI'll extract the numbers and add them to your budget automatically!`;
+        }
+        let r = `📄 Uploaded Documents (${data.documents.length}):\n\n`;
+        data.documents.forEach(doc => {
+          r += `• ${doc.name}\n  Type: ${doc.type} | Uploaded: ${doc.uploadDate}\n  ${doc.summary}\n\n`;
+        });
+        r += `Upload more anytime with the 📎 button!`;
+        return r;
+      }
+
+      if (q.includes('spending') && (q.includes('breakdown') || q.includes('category') || q.includes('categories') || q.includes('where'))) {
+        // Look for spending category data in documents
+        let spendingData = null;
+        if (data.documents) {
+          for (const doc of data.documents) {
+            if (doc.extractedData && doc.extractedData.spendingByCategory) {
+              spendingData = { categories: doc.extractedData.spendingByCategory, source: doc.name };
+              break;
+            }
+          }
+        }
+        if (spendingData) {
+          let r = `💳 Spending Breakdown (from ${spendingData.source}):\n\n`;
+          const sorted = Object.entries(spendingData.categories).sort((a, b) => b[1] - a[1]);
+          const total = sorted.reduce((a, [, v]) => a + v, 0);
+          sorted.forEach(([cat, amt]) => {
+            const pct = ((amt / total) * 100).toFixed(0);
+            r += `• ${cat}: ${formatCurrency(amt)} (${pct}%)\n`;
+          });
+          r += `\nTotal: ${formatCurrency(total)}\n\n`;
+          // Smart observations
+          const dining = (spendingData.categories['Dining'] || 0) + (spendingData.categories['Delivery/DoorDash'] || 0);
+          if (dining > 500) r += `💡 Dining + delivery is ${formatCurrency(dining)} — that's a big savings opportunity!`;
+          return r;
+        }
+        return `I don't have spending category data yet. Upload a credit card statement (PDF or text) and I'll break down your spending by category!\n\nTap the 📎 button to upload.`;
+      }
+
+      // ===== HELOC / CAN I AFFORD HELOC =====
+      if ((q.includes('afford') || q.includes('handle') || q.includes('manage') || q.includes('take on') || q.includes('swing')) && (q.includes('heloc') || q.includes('renovation') || q.includes('loan') || q.includes('renofi'))) {
+        let r = `📊 HELOC Affordability Analysis:\n\n`;
+        r += `Current monthly surplus: ${formatCurrency(surplus)}\n`;
+        r += `HELOC payment (full $300k draw): ${formatCurrency(helocPayment)}/mo\n\n`;
+        
+        if (surplus >= helocPayment) {
+          r += `✅ YES — your surplus of ${formatCurrency(surplus)} covers the ${formatCurrency(helocPayment)} HELOC payment with ${formatCurrency(surplus - helocPayment)} to spare.\n\n`;
+        } else if (surplus > 0) {
+          const shortfall = helocPayment - surplus;
+          r += `⚠️ TIGHT — your surplus is ${formatCurrency(surplus)}, but the HELOC payment is ${formatCurrency(helocPayment)}. That's a shortfall of ${formatCurrency(shortfall)}/mo.\n\n`;
+          r += `To make it work you'd need to:\n`;
+          r += `• Cut expenses by ${formatCurrency(shortfall)}/mo, OR\n`;
+          r += `• Increase income by ${formatCurrency(shortfall)}/mo, OR\n`;
+          r += `• Draw less than the full $300k\n\n`;
+          // Estimate max affordable draw
+          const maxDraw = (surplus / helocPayment) * data.heloc.total;
+          r += `At your current surplus, you could comfortably handle ~${formatCurrency(maxDraw)} drawn.\n\n`;
+        } else {
+          r += `❌ NOT YET — you're already running a deficit of ${formatCurrency(Math.abs(surplus))}/mo before the HELOC.\n\n`;
+          r += `You'd need to free up ${formatCurrency(helocPayment + Math.abs(surplus))}/mo to cover the HELOC payment.\n\n`;
+        }
+        
+        r += `But keep in mind:\n`;
+        r += `• During the ${helocDrawPeriod}-year draw period, you only pay interest on what's drawn (not the full $300k right away)\n`;
+        r += `• At ${helocRate}% on $50k drawn, that's only ~${formatCurrency(50000 * helocRate / 100 / 12)}/mo\n`;
+        r += `• The full ${formatCurrency(helocPayment)} kicks in during the ${helocRepayment}-year repayment phase\n`;
+        
+        if (ccDebt > 0) {
+          r += `\n💡 Big opportunity: You're paying ~${formatCurrency(totalCCInterest)}/mo in CC interest at ${sapphire ? sapphire.apr : '~24'}% APR. If you paid off the CC debt first, that frees up ${formatCurrency(ccMinimums)}/mo in minimum payments.`;
+        }
+        return r;
+      }
+
+      // ===== AFFORD GENERIC (with dollar amount) =====
       if (q.includes('afford') || q.includes('can we') || q.includes('can i')) {
         const amountMatch = q.match(/\$?([\d,]+)/);
         if (amountMatch) {
-          const amount = parseFloat(amountMatch[1].replace(',', ''));
+          const amount = parseFloat(amountMatch[1].replace(/,/g, ''));
           if (amount <= surplus) {
-            return `Yes, you can afford ${formatCurrency(amount)}! It's within your monthly surplus of ${formatCurrency(surplus)}.\n\nThis would leave you with ${formatCurrency(surplus - amount)} remaining this month.`;
-          } else if (amount <= surplus * 3) {
+            return `✅ Yes — ${formatCurrency(amount)} fits within your monthly surplus of ${formatCurrency(surplus)}, leaving ${formatCurrency(surplus - amount)} remaining.\n\nFor context, your monthly obligations are ${formatCurrency(totalObligations)} against ${formatCurrency(income)} income.`;
+          } else if (surplus > 0 && amount <= surplus * 6) {
             const months = Math.ceil(amount / surplus);
-            return `${formatCurrency(amount)} is more than your monthly surplus of ${formatCurrency(surplus)}, but you could save for it in about ${months} months.\n\nAlternatively, you could draw from your HELOC (${formatCurrency(helocRemaining)} available) if it's renovation-related.`;
+            return `⚠️ Not in one month (surplus is ${formatCurrency(surplus)}), but you could save for it in ~${months} months.\n\nAlternatively, ${amount <= helocRemaining ? `you could draw from HELOC (${formatCurrency(helocRemaining)} available) if it's renovation-related.` : 'consider financing options.'}`;
           } else {
-            return `${formatCurrency(amount)} would be a stretch. Your monthly surplus is ${formatCurrency(surplus)}.\n\nOptions:\n• Save over ${Math.ceil(amount / surplus)} months\n• Draw from HELOC (${formatCurrency(helocRemaining)} available)\n• Consider financing`;
+            return `❌ ${formatCurrency(amount)} is a stretch. Your surplus is ${formatCurrency(surplus)}/mo — that's ${surplus > 0 ? Math.ceil(amount / surplus) + ' months' : 'not possible right now since you\'re in deficit'}.\n\nHELOC has ${formatCurrency(helocRemaining)} available for renovation expenses.`;
           }
         }
-        return `To check if you can afford something, include the amount in your question. For example: "Can we afford $5,000?"`;
+        // No dollar amount — give general affordability picture
+        return `Here's your affordability snapshot:\n\n• Monthly income: ${formatCurrency(income)}\n• Monthly obligations: ${formatCurrency(totalObligations)}\n• Monthly surplus: ${formatCurrency(surplus)}\n• CC minimums eating: ${formatCurrency(ccMinimums)}/mo\n• CC interest burning: ~${formatCurrency(totalCCInterest)}/mo\n\nTip: Ask me "Can I afford $X?" with a specific amount, or "Can I afford the HELOC?" for a detailed analysis.`;
       }
 
-      if (q.includes('debt') || q.includes('owe')) {
-        let response = `Your total debt is ${formatCurrency(totalDebt)}:\n`;
-        if (ccDebt > 0) response += `\n• Credit Cards: ${formatCurrency(ccDebt)}`;
-        if (slDebt > 0) response += `\n• Student Loans: ${formatCurrency(slDebt)}`;
-        if (data.heloc.drawn > 0) response += `\n• HELOC Drawn: ${formatCurrency(data.heloc.drawn)}`;
-        if (data.mortgage.balance > 0) response += `\n• Mortgage: ${formatCurrency(data.mortgage.balance)} (not included in total above)`;
-        
-        if (ccDebt > 0 && surplus > 0) {
-          const ccMonths = Math.ceil(ccDebt / surplus);
-          response += `\n\nAt your current surplus, you could pay off credit cards in ~${ccMonths} months if you dedicated all extra funds to it.`;
-        }
-        return response;
+      // ===== INCOME =====
+      if (q.includes('income') || q.includes('make') || q.includes('earn') || q.includes('salary') || q.includes('paycheck')) {
+        return `Combined monthly income: ${formatCurrency(income)}\n\n• ${p1()}${p1Emp()}: ${formatCurrency(data.income.person1)}\n• ${p2()}${p2Emp()}: ${formatCurrency(data.income.person2)}\n• ${data.incomeLabels?.other1 || 'Benefits'}: ${formatCurrency(data.income.other1)}${data.income.other2 > 0 ? `\n• Other: ${formatCurrency(data.income.other2)}` : ''}\n\nAfter all obligations (${formatCurrency(totalObligations)}), your surplus is ${formatCurrency(surplus)}/mo.`;
       }
 
-      if (q.includes('credit card') || q.includes('cards')) {
-        if (data.creditCards.length === 0) {
-          return `You haven't added any credit cards yet. Go to the Debts tab and click "+ Add Card" to track your credit cards.`;
+      // ===== SURPLUS =====
+      if (q.includes('surplus') || q.includes('left over') || q.includes('leftover') || q.includes('extra') || q.includes('spare') || q.includes('breathing room')) {
+        if (surplus >= 0) {
+          let r = `Monthly surplus: ${formatCurrency(surplus)}\n\n`;
+          r += `Income: ${formatCurrency(income)}\nObligations: ${formatCurrency(totalObligations)}\n\n`;
+          r += `Breakdown of obligations:\n`;
+          r += `• Fixed bills: ${formatCurrency(fixedExpenses)}\n`;
+          r += `• CC minimums: ${formatCurrency(ccMinimums)}\n`;
+          if (helocInterest > 0) r += `• HELOC interest: ${formatCurrency(helocInterest)}\n`;
+          r += `\nBest use of surplus:\n`;
+          if (ccDebt > 0) r += `1. Attack CC debt (saving ~${formatCurrency(totalCCInterest)}/mo in interest)\n`;
+          if (data.emergencyFund.current < data.emergencyFund.target) r += `${ccDebt > 0 ? '2' : '1'}. Build emergency fund (${formatCurrency(data.emergencyFund.current)} of ${formatCurrency(data.emergencyFund.target)} goal)\n`;
+          return r;
+        } else {
+          return `⚠️ You're running a deficit of ${formatCurrency(Math.abs(surplus))}/mo.\n\nIncome: ${formatCurrency(income)}\nObligations: ${formatCurrency(totalObligations)}\n\nBiggest costs:\n• CC minimums: ${formatCurrency(ccMinimums)}/mo\n• Mortgage: ${formatCurrency(data.mortgage.payment)}/mo\n• Fixed bills: ${formatCurrency(fixedExpenses - data.mortgage.payment)}/mo\n\nConsider reducing discretionary spending or increasing income.`;
         }
-        let response = `You have ${data.creditCards.length} credit card(s) totaling ${formatCurrency(ccDebt)}:\n`;
-        data.creditCards.sort((a, b) => b.apr - a.apr).forEach(card => {
-          response += `\n• ${card.name}: ${formatCurrency(card.balance)} at ${card.apr}% APR`;
+      }
+
+      // ===== INTEREST / WASTING =====
+      if (q.includes('interest') || q.includes('wasting') || q.includes('costing') || q.includes('burning')) {
+        let r = `💸 Monthly Interest Costs:\n\n`;
+        data.creditCards.forEach(c => {
+          const monthlyInt = c.lastInterest || (c.balance * c.apr / 100 / 12);
+          r += `• ${c.name}: ~${formatCurrency(monthlyInt)}/mo (${c.apr}% on ${formatCurrency(c.balance)})\n`;
         });
-        response += `\n\n💡 Pay the highest APR card first (avalanche method) to save the most on interest.`;
-        return response;
+        r += `\nTotal CC interest: ~${formatCurrency(totalCCInterest)}/mo (${formatCurrency(totalCCInterest * 12)}/yr)\n`;
+        if (helocInterest > 0) r += `HELOC interest: ${formatCurrency(helocInterest)}/mo\n`;
+        r += `\nThat's ${formatCurrency(totalCCInterest + helocInterest)} going to interest every month instead of your renovation or savings.`;
+        if (sapphire && sapphire.balance > sapphire.limit) {
+          r += `\n\n⚠️ Your Sapphire Reserve is over its credit limit by ${formatCurrency(sapphire.balance - sapphire.limit)}!`;
+        }
+        return r;
       }
 
-      if (q.includes('renovation') || q.includes('spent') || q.includes('remodel')) {
-        let response = `Renovation Budget: ${formatCurrency(renoSpent)} spent of ${formatCurrency(data.renovation.budget)}\n\nRemaining: ${formatCurrency(renoRemaining)}\n\nBy category:`;
+      // ===== CREDIT CARDS =====
+      if (q.includes('credit card') || q.includes('cards') || q.includes('sapphire') || q.includes('amazon') || q.includes('chase')) {
+        if (q.includes('sapphire') && sapphire) {
+          const util = ((sapphire.balance / sapphire.limit) * 100).toFixed(0);
+          let r = `Chase Sapphire Reserve:\n\n`;
+          r += `• Balance: ${formatCurrency(sapphire.balance)}\n`;
+          r += `• Credit Limit: ${formatCurrency(sapphire.limit)}\n`;
+          r += `• Utilization: ${util}%${sapphire.balance > sapphire.limit ? ' ⚠️ OVER LIMIT by ' + formatCurrency(sapphire.balance - sapphire.limit) : ''}\n`;
+          r += `• APR: ${sapphire.apr}%\n`;
+          r += `• Monthly Interest: ~${formatCurrency(sapphire.lastInterest || (sapphire.balance * sapphire.apr / 100 / 12))}\n`;
+          r += `• Minimum Due: ${formatCurrency(sapphire.minimum)}\n`;
+          r += `• Due Date: ${sapphire.dueDate || 'N/A'}\n`;
+          r += `• AutoPay: ${sapphire.autopay ? '✅ ON' : '❌ OFF'}\n`;
+          r += `• Rewards: ${sapphire.rewards || 'N/A'}\n`;
+          r += `• Pay Over Time plans: $2,823.73 remaining (6 active plans)`;
+          return r;
+        }
+        if (q.includes('amazon') && amazon) {
+          const util = ((amazon.balance / amazon.limit) * 100).toFixed(0);
+          let r = `Chase Amazon Prime Visa:\n\n`;
+          r += `• Balance: ${formatCurrency(amazon.balance)}\n`;
+          r += `• Credit Limit: ${formatCurrency(amazon.limit)}\n`;
+          r += `• Utilization: ${util}%\n`;
+          r += `• APR: ${amazon.apr}%\n`;
+          r += `• Monthly Interest: ~${formatCurrency(amazon.lastInterest || (amazon.balance * amazon.apr / 100 / 12))}\n`;
+          r += `• Minimum Due: ${formatCurrency(amazon.minimum)}\n`;
+          r += `• Due Date: ${amazon.dueDate || 'N/A'}\n`;
+          r += `• AutoPay: ${amazon.autopay ? '✅ ON' : '❌ OFF — consider turning this on!'}\n`;
+          r += `• Rewards: ${amazon.rewards || 'N/A'}`;
+          return r;
+        }
+        let r = `💳 Credit Cards — Total: ${formatCurrency(ccDebt)}\n\n`;
+        data.creditCards.sort((a, b) => b.apr - a.apr).forEach(card => {
+          const monthlyInt = card.lastInterest || (card.balance * card.apr / 100 / 12);
+          r += `${card.name}:\n`;
+          r += `  ${formatCurrency(card.balance)} at ${card.apr}% → ~${formatCurrency(monthlyInt)}/mo interest\n`;
+          r += `  Min: ${formatCurrency(card.minimum)} • Due: ${card.dueDate || 'N/A'}${card.autopay ? ' • AutoPay ✅' : ' • AutoPay ❌'}\n\n`;
+        });
+        r += `Combined interest: ~${formatCurrency(totalCCInterest)}/mo\nCombined minimums: ${formatCurrency(ccMinimums)}/mo\n\n`;
+        r += `💡 Avalanche strategy: Pay minimums on Amazon (${amazon ? amazon.apr : '22.74'}%), throw extra at Sapphire (${sapphire ? sapphire.apr : '24.99'}%) first — it has the higher rate.`;
+        return r;
+      }
+
+      // ===== DEBT OVERVIEW =====
+      if (q.includes('debt') || q.includes('owe')) {
+        let r = `Total debt: ${formatCurrency(totalDebt)}\n\n`;
+        if (ccDebt > 0) {
+          r += `💳 Credit Cards: ${formatCurrency(ccDebt)}\n`;
+          data.creditCards.forEach(c => {
+            r += `   • ${c.name}: ${formatCurrency(c.balance)} (${c.apr}%)\n`;
+          });
+        }
+        if (slDebt > 0) r += `🎓 Student Loans: ${formatCurrency(slDebt)}\n`;
+        if (data.heloc.drawn > 0) r += `🏠 HELOC: ${formatCurrency(data.heloc.drawn)}\n`;
+        r += `\nMonthly debt payments: ${formatCurrency(ccMinimums + data.studentLoans.reduce((a, l) => a + l.payment, 0) + helocInterest)}\n`;
+        r += `Monthly interest burned: ~${formatCurrency(totalCCInterest + helocInterest)}\n\n`;
+        
+        if (surplus > 0 && ccDebt > 0) {
+          // Simple payoff estimate (ignoring interest for rough calc)
+          const monthsToPayCC = Math.ceil(ccDebt / (surplus + ccMinimums * 0.3));
+          r += `If you put your full surplus toward CC debt, you could be free in roughly ${monthsToPayCC}-${Math.ceil(monthsToPayCC * 1.3)} months.`;
+        }
+        return r;
+      }
+
+      // ===== PAYOFF / STRATEGY =====
+      if (q.includes('pay off') || q.includes('payoff') || q.includes('strategy') || q.includes('plan') || q.includes('avalanche') || q.includes('snowball') || q.includes('get out of debt')) {
+        let r = `🎯 Debt Payoff Strategy:\n\n`;
+        r += `Recommended: Avalanche Method (highest interest first)\n\n`;
+        
+        const allDebts = [
+          ...data.creditCards.map(c => ({ name: c.name, balance: c.balance, rate: c.apr, minimum: c.minimum, type: 'CC' })),
+          ...data.studentLoans.filter(l => l.balance > 0).map(l => ({ name: l.name, balance: l.balance, rate: l.rate, minimum: l.payment, type: 'SL' }))
+        ].sort((a, b) => b.rate - a.rate);
+        
+        r += `Priority order:\n`;
+        allDebts.forEach((d, i) => {
+          r += `${i + 1}. ${d.name} — ${formatCurrency(d.balance)} at ${d.rate}%\n`;
+        });
+        
+        r += `\nYour surplus: ${formatCurrency(surplus)}/mo\n\n`;
+        if (surplus > 0) {
+          r += `Action plan:\n`;
+          r += `• Pay minimums on everything (${formatCurrency(ccMinimums + data.studentLoans.reduce((a, l) => a + l.payment, 0))})\n`;
+          r += `• Throw extra ${formatCurrency(surplus)} at ${allDebts[0]?.name || 'highest rate debt'}\n`;
+          r += `• Once that's paid off, roll its payment into the next one\n\n`;
+          r += `Each CC you pay off frees up its minimum payment AND stops ${formatCurrency(totalCCInterest)}/mo in interest from growing.`;
+        } else {
+          r += `⚠️ Your surplus is negative — focus on cutting expenses before aggressive payoff.`;
+        }
+        return r;
+      }
+
+      // ===== HELOC DETAILS =====
+      if (q.includes('heloc') || q.includes('renofi') || q.includes('draw')) {
+        let r = `🏠 HELOC Details (${helocLender}):\n\n`;
+        r += `• Loan Amount: ${formatCurrency(data.heloc.total)}\n`;
+        r += `• Fixed Rate: ${helocRate}%\n`;
+        r += `• Draw Period: ${helocDrawPeriod} years\n`;
+        r += `• Repayment Period: ${helocRepayment} years\n`;
+        r += `• Est. Monthly Payment (full draw): ${formatCurrency(helocPayment)}\n`;
+        r += `• Status: ${data.heloc.status || 'Pursuing'}\n\n`;
+        r += `• Amount Drawn: ${formatCurrency(data.heloc.drawn)}\n`;
+        r += `• Remaining to Draw: ${formatCurrency(helocRemaining)}\n`;
+        r += `• Current Monthly Interest: ${formatCurrency(helocInterest)}\n\n`;
+        
+        if (data.heloc.drawn > 0) {
+          const drawRatio = data.heloc.drawn / data.heloc.total;
+          r += `At current draw, estimated payment: ~${formatCurrency(helocPayment * drawRatio)}/mo\n`;
+        } else {
+          r += `No funds drawn yet. During the draw period, you'll only pay interest on what you've used.\n`;
+          r += `Example: Draw $50k → ~${formatCurrency(50000 * helocRate / 100 / 12)}/mo in interest.`;
+        }
+        return r;
+      }
+
+      // ===== RENOVATION =====
+      if (q.includes('renovation') || q.includes('remodel') || q.includes('project')) {
+        let r = `🔨 Renovation Budget:\n\n`;
+        r += `Total Budget: ${formatCurrency(data.renovation.budget)}\n`;
+        r += `Spent: ${formatCurrency(renoSpent)}\n`;
+        r += `Remaining: ${formatCurrency(renoRemaining)}\n\n`;
+        r += `By category:\n`;
         for (const [name, cat] of Object.entries(data.renovation.categories)) {
-          if (cat.spent > 0) {
-            response += `\n• ${name}: ${formatCurrency(cat.spent)} / ${formatCurrency(cat.budget)}`;
-          }
+          const pct = cat.budget > 0 ? ((cat.spent / cat.budget) * 100).toFixed(0) : 0;
+          r += `• ${name}: ${formatCurrency(cat.spent)} / ${formatCurrency(cat.budget)} (${pct}%)\n`;
         }
-        if (renoSpent === 0) {
-          response += `\n\nNo expenses recorded yet. Use the Quick Add on the Dashboard or go to the Renovation tab to log expenses.`;
-        }
-        return response;
+        r += `\nFunded by: ${helocLender} HELOC at ${helocRate}% fixed\n`;
+        r += `HELOC drawn so far: ${formatCurrency(data.heloc.drawn)} of ${formatCurrency(data.heloc.total)}`;
+        return r;
       }
 
+      // ===== RENOVATION CATEGORIES =====
       const categories = ['kitchen', 'bathroom', 'flooring', 'hvac', 'electrical', 'plumbing', 'exterior', 'windows', 'doors'];
       for (const cat of categories) {
         if (q.includes(cat)) {
@@ -1188,63 +2315,135 @@
           if (catName) {
             const c = data.renovation.categories[catName];
             const pct = c.budget > 0 ? ((c.spent / c.budget) * 100).toFixed(1) : 0;
-            return `${catName} Budget:\n\n• Spent: ${formatCurrency(c.spent)}\n• Budget: ${formatCurrency(c.budget)}\n• Remaining: ${formatCurrency(c.budget - c.spent)}\n• Progress: ${pct}%`;
+            return `${catName} Budget:\n\n• Budget: ${formatCurrency(c.budget)}\n• Spent: ${formatCurrency(c.spent)}\n• Remaining: ${formatCurrency(c.budget - c.spent)}\n• Progress: ${pct}%`;
           }
         }
       }
 
-      if (q.includes('heloc') || q.includes('loan') || q.includes('draw')) {
-        return `HELOC Status:\n\n• Total Available: ${formatCurrency(data.heloc.total)}\n• Amount Drawn: ${formatCurrency(data.heloc.drawn)}\n• Remaining to Draw: ${formatCurrency(helocRemaining)}\n• Interest Rate: ${data.heloc.rate}%\n• Monthly Interest: ${formatCurrency(getHelocInterest())}\n\nGo to the Renovation tab to draw funds.`;
-      }
-
-      if (q.includes('emergency') || q.includes('savings') || q.includes('fund')) {
-        let response = `Emergency Fund:\n\n• Current: ${formatCurrency(data.emergencyFund.current)}\n• Goal: ${formatCurrency(data.emergencyFund.target)}\n• Progress: ${emergencyProgress.toFixed(1)}%`;
-        if (monthsToEmergency !== Infinity && monthsToEmergency > 0) {
-          response += `\n\nAt your current surplus of ${formatCurrency(surplus)}/month, you'll reach your goal in approximately ${monthsToEmergency} months.`;
-        } else if (data.emergencyFund.current >= data.emergencyFund.target) {
-          response += `\n\n🎉 Congratulations! You've reached your emergency fund goal!`;
+      // ===== EMERGENCY FUND =====
+      if (q.includes('emergency') || q.includes('savings') || q.includes('fund') || q.includes('rainy day')) {
+        let r = `🏦 Emergency Fund:\n\n• Current: ${formatCurrency(data.emergencyFund.current)}\n• Goal: ${formatCurrency(data.emergencyFund.target)}\n• Progress: ${emergencyProgress.toFixed(1)}%\n`;
+        if (data.emergencyFund.current >= data.emergencyFund.target) {
+          r += `\n🎉 Goal reached!`;
+        } else if (surplus > 0) {
+          r += `\nAt ${formatCurrency(surplus)}/mo surplus, you'd reach the goal in ~${monthsToEmergency} months.\n\n`;
+          r += `💡 Most advisors recommend building at least $1,000-$2,000 in emergency savings before aggressively paying debt, then splitting surplus between debt payoff and emergency fund.`;
+        } else {
+          r += `\n⚠️ With a negative surplus, focus on reducing expenses before building this fund.`;
         }
-        return response;
+        return r;
       }
 
-      if (q.includes('expense') || q.includes('bills') || q.includes('pay')) {
-        let response = `Monthly Fixed Expenses: ${formatCurrency(getTotalExpenses())}\n`;
+      // ===== EXPENSES / BILLS =====
+      if (q.includes('expense') || q.includes('bills') || q.includes('pay') || q.includes('spending') || q.includes('obligations')) {
+        let r = `Monthly Obligations: ${formatCurrency(totalObligations)}\n\n`;
+        r += `Fixed Bills:\n`;
         for (const [name, amount] of Object.entries(data.expenses)) {
-          response += `\n• ${name}: ${formatCurrency(amount)}`;
+          r += `• ${name}: ${formatCurrency(amount)}\n`;
         }
-        if (getCreditCardMinimums() > 0) {
-          response += `\n• CC Minimums: ${formatCurrency(getCreditCardMinimums())}`;
-        }
-        if (getHelocInterest() > 0) {
-          response += `\n• HELOC Interest: ${formatCurrency(getHelocInterest())}`;
-        }
-        return response;
+        r += `\nDebt Payments:\n`;
+        r += `• CC Minimums: ${formatCurrency(ccMinimums)}\n`;
+        if (helocInterest > 0) r += `• HELOC Interest: ${formatCurrency(helocInterest)}\n`;
+        r += `\nTotal: ${formatCurrency(totalObligations)} of ${formatCurrency(income)} income (${((totalObligations / income) * 100).toFixed(0)}%)`;
+        return r;
       }
 
+      // ===== MORTGAGE =====
       if (q.includes('mortgage') || q.includes('house payment')) {
-        return `Mortgage (Freedom Mortgage):\n\n• Monthly Payment: ${formatCurrency(data.mortgage.payment)}\n• Balance: ${data.mortgage.balance > 0 ? formatCurrency(data.mortgage.balance) : 'Not entered yet'}\n• Rate: ${data.mortgage.rate > 0 ? data.mortgage.rate + '%' : 'Not entered yet'}`;
+        return `Mortgage${data.profile?.mortgageLender ? ' (' + data.profile.mortgageLender + ')' : ''}:\n\n• Monthly Payment: ${formatCurrency(data.mortgage.payment)}\n• Balance: ${data.mortgage.balance > 0 ? formatCurrency(data.mortgage.balance) : 'Not entered yet'}\n• Rate: ${data.mortgage.rate > 0 ? data.mortgage.rate + '%' : 'Not entered yet'}\n\nThis is your largest single expense at ${((data.mortgage.payment / income) * 100).toFixed(0)}% of income.`;
       }
 
-      if (q.includes('student') || q.includes('loan')) {
-        let response = `Student Loans (Judith):\n`;
+      // ===== STUDENT LOANS =====
+      if (q.includes('student')) {
+        let r = `🎓 Student Loans:\n`;
         data.studentLoans.forEach(loan => {
-          response += `\n• ${loan.name}: ${loan.balance > 0 ? formatCurrency(loan.balance) : 'Balance TBD'} — ${formatCurrency(loan.payment)}/month`;
+          r += `\n• ${loan.name}: ${loan.balance > 0 ? formatCurrency(loan.balance) : 'Balance TBD'} — ${formatCurrency(loan.payment)}/mo`;
         });
-        response += `\n\nTotal Monthly Payment: ${formatCurrency(data.studentLoans.reduce((a, l) => a + l.payment, 0))}`;
-        return response;
+        r += `\n\nTotal Monthly: ${formatCurrency(data.studentLoans.reduce((a, l) => a + l.payment, 0))}`;
+        return r;
       }
 
-      if (q.includes('summary') || q.includes('overview') || q.includes('status') || q.includes('how are we doing')) {
-        return `📊 Budget Summary:\n\n💵 Income: ${formatCurrency(income)}/month\n💸 Expenses: ${formatCurrency(expenses)}/month\n${surplus >= 0 ? '✅' : '⚠️'} Surplus: ${formatCurrency(surplus)}/month\n\n💳 Total Debt: ${formatCurrency(totalDebt)}\n🏠 HELOC Used: ${formatCurrency(data.heloc.drawn)} of ${formatCurrency(data.heloc.total)}\n🔨 Reno Spent: ${formatCurrency(renoSpent)} of ${formatCurrency(data.renovation.budget)}\n🏦 Emergency Fund: ${emergencyProgress.toFixed(0)}% of goal`;
+      // ===== SUMMARY / STATUS =====
+      if (q.includes('summary') || q.includes('overview') || q.includes('status') || q.includes('how are we') || q.includes('snapshot') || q.includes('big picture')) {
+        let r = `📊 Financial Snapshot:\n\n`;
+        r += `💵 Income: ${formatCurrency(income)}/mo\n`;
+        r += `💸 Obligations: ${formatCurrency(totalObligations)}/mo\n`;
+        r += `${surplus >= 0 ? '✅' : '⚠️'} Surplus: ${formatCurrency(surplus)}/mo\n\n`;
+        r += `💳 Credit Card Debt: ${formatCurrency(ccDebt)}\n`;
+        r += `   Interest cost: ~${formatCurrency(totalCCInterest)}/mo\n`;
+        r += `🏠 HELOC: ${formatCurrency(data.heloc.drawn)} drawn of ${formatCurrency(data.heloc.total)} (${helocLender}, ${helocRate}% fixed)\n`;
+        r += `   Full draw payment: ${formatCurrency(helocPayment)}/mo\n`;
+        r += `🔨 Renovation: ${formatCurrency(renoSpent)} of ${formatCurrency(data.renovation.budget)} spent\n`;
+        r += `🏦 Emergency Fund: ${formatCurrency(data.emergencyFund.current)} of ${formatCurrency(data.emergencyFund.target)} (${emergencyProgress.toFixed(0)}%)\n\n`;
+        
+        // Smart advice
+        if (ccDebt > 20000) {
+          r += `🚨 Priority: Your CC debt is costing ~${formatCurrency(totalCCInterest * 12)}/year in interest. Consider attacking this before starting the renovation draw.`;
+        } else if (surplus < helocPayment) {
+          r += `⚠️ Watch: Your surplus won't cover the full HELOC payment yet. Focus on freeing up cash flow.`;
+        } else {
+          r += `💪 You're in a position to move forward with the renovation!`;
+        }
+        return r;
       }
 
+      // ===== DUE DATES =====
+      if (q.includes('due') || q.includes('when') || q.includes('payment date')) {
+        let r = `📅 Upcoming Due Dates:\n\n`;
+        data.creditCards.forEach(c => {
+          r += `• ${c.name}: ${c.dueDate || 'N/A'} — ${formatCurrency(c.minimum)} min${c.autopay ? ' (AutoPay ✅)' : ' ⚠️ NO AUTOPAY'}\n`;
+        });
+        r += `• Mortgage: Monthly — ${formatCurrency(data.mortgage.payment)}\n`;
+        data.studentLoans.forEach(l => {
+          r += `• ${l.name}: Monthly — ${formatCurrency(l.payment)}\n`;
+        });
+        return r;
+      }
+
+      // ===== REWARDS =====
+      if (q.includes('reward') || q.includes('points')) {
+        let r = `🎁 Credit Card Rewards:\n\n`;
+        data.creditCards.forEach(c => {
+          r += `• ${c.name}: ${c.rewards || 'None tracked'}\n`;
+        });
+        r += `\n💡 Consider redeeming points toward statement credit to help pay down balances.`;
+        return r;
+      }
+
+      // ===== ADVICE / RECOMMENDATION / WHAT SHOULD =====
+      if (q.includes('advice') || q.includes('recommend') || q.includes('should') || q.includes('priority') || q.includes('what next') || q.includes('focus')) {
+        let r = `💡 Recommended Priority Order:\n\n`;
+        let step = 1;
+        
+        if (data.emergencyFund.current < 2000) {
+          r += `${step}. Build emergency fund to $2,000 (currently ${formatCurrency(data.emergencyFund.current)})\n`;
+          step++;
+        }
+        if (ccDebt > 0) {
+          r += `${step}. Attack credit card debt (${formatCurrency(ccDebt)} at ~${sapphire ? sapphire.apr : '24'}% APR)\n`;
+          r += `   → You're losing ~${formatCurrency(totalCCInterest)}/mo to interest\n`;
+          r += `   → Sapphire is over its credit limit — fix this first\n`;
+          step++;
+        }
+        if (data.emergencyFund.current < data.emergencyFund.target) {
+          r += `${step}. Build emergency fund to ${formatCurrency(data.emergencyFund.target)}\n`;
+          step++;
+        }
+        r += `${step}. Start HELOC draws for renovation\n`;
+        r += `   → ${formatCurrency(helocPayment)}/mo at full draw (${helocRate}% is much better than ${sapphire ? sapphire.apr : '24.99'}% CC rate)\n`;
+        step++;
+        r += `\n⚡ Quick win: The Sapphire is at ${sapphire ? ((sapphire.balance / sapphire.limit) * 100).toFixed(0) : '100'}% utilization. Getting it under 90% would help your credit score for the HELOC application.`;
+        return r;
+      }
+
+      // ===== HELP =====
       if (q.includes('help') || q.includes('what can')) {
-        return `I can answer questions about:\n\n• Income & surplus\n• Debts (credit cards, student loans)\n• HELOC & renovation budget\n• Monthly expenses\n• Emergency fund progress\n• Affordability ("Can we afford $X?")\n\nTry asking:\n• "What's our monthly surplus?"\n• "How much have we spent on renovation?"\n• "Can we afford $10,000?"\n• "How are we doing?"`;
+        return `I know your finances and can help you plan! Ask me:\n\n📊 Analysis:\n• "Can I afford the HELOC?"\n• "How much interest are we wasting?"\n• "What should we focus on?"\n• "Where is our money going?" (spending breakdown)\n\n📝 Set Goals (I'll save these!):\n• "Set a goal to pay off Sapphire in 12 months"\n• "Save $500/month for emergencies"\n• "Limit dining to $400/month"\n\n📎 Upload Documents:\n• Tap the 📎 button to upload statements, bills, pay stubs\n• I'll extract data and update your budget automatically\n• "Show my documents" to see what's uploaded\n\n✅ Track & Log:\n• "Paid $500 toward Sapphire goal"\n• "We decided to start the kitchen in April"\n\nEverything syncs to Google Sheets when connected!`;
       }
 
-      return `I'm not sure how to answer that. Try asking about:\n\n• Income or surplus\n• Debts or credit cards\n• Renovation spending\n• HELOC balance\n• Emergency fund\n• Monthly expenses\n• "Can we afford $X?"\n\nOr ask "help" to see more examples.`;
+      // ===== FALLBACK =====
+      return `I'm not sure about that, but I know your finances inside and out! Try asking:\n\n• "Can I afford the HELOC?"\n• "What's our surplus?"\n• "How much interest are we wasting?"\n• "What should we focus on?"\n• "How are we doing?"\n\nOr ask "help" to see everything I can answer.`;
     }
   </script>
-
 </body>
 </html>
