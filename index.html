@@ -105,7 +105,7 @@
   <div class="glass rounded-xl p-5 border border-gray-700 mb-6">
     <div class="flex justify-between items-start mb-4">
       <h3 class="text-lg font-semibold">🏠 HELOC Status</h3>
-      <span class="text-xs bg-yellow-600/30 text-yellow-300 px-2 py-1 rounded-full" id="heloc-status-badge">Pursuing</span>
+      <span class="text-xs bg-green-600/30 text-green-300 px-2 py-1 rounded-full" id="heloc-status-badge">Active</span>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-sm">
       <div class="bg-gray-800/50 rounded-lg p-3">
@@ -118,7 +118,7 @@
       </div>
       <div class="bg-gray-800/50 rounded-lg p-3">
         <div class="text-gray-500 text-xs">Draw Period</div>
-        <div class="text-gray-200 font-medium" id="heloc-draw-period-display">2 years</div>
+        <div class="text-gray-200 font-medium" id="heloc-draw-period-display">0 years</div>
       </div>
       <div class="bg-gray-800/50 rounded-lg p-3">
         <div class="text-gray-500 text-xs">Repayment</div>
@@ -128,13 +128,13 @@
     <div class="mb-4">
       <div class="flex justify-between text-sm mb-2">
         <span class="text-gray-400">Amount Drawn</span>
-        <span id="heloc-drawn-display">$0 / $300,000</span>
+        <span id="heloc-drawn-display">$0 / $400,000</span>
       </div>
       <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
         <div id="heloc-progress" class="h-full bg-gradient-to-r from-blue-600 to-blue-400 progress-bar" style="width: 0%"></div>
       </div>
       <div class="flex justify-between text-xs text-gray-500 mt-1">
-        <span id="heloc-monthly-payment-display">Est. Monthly Payment: $2,347.13 (at full draw)</span>
+        <span id="heloc-monthly-payment-display">Est. Monthly Payment: $3,253.00</span>
         <span id="heloc-interest-display">Current Monthly Interest: $0</span>
       </div>
     </div>
@@ -719,14 +719,14 @@
       return {
       // Profile
       profile: {
-        person1Name: 'Craig',
+        person1Name: 'Alex',
         person2Name: 'Judith',
         person1Employer: 'Comcast',
         person2Employer: 'Signature Science',
         location: 'Cherry Hill, NJ',
         mortgageLender: 'Freedom Mortgage',
         appUrl: 'https://caday89-boop.github.io/Day_budget/',
-        helocDesc: '$300k RenoFi HELOC Renovation'
+        helocDesc: '$400k HELOC Renovation'
       },
 
       // Income
@@ -737,7 +737,7 @@
         other2: 0
       },
       incomeLabels: {
-        person1: 'Craig',
+        person1: 'Alex',
         person2: 'Judith',
         other1: 'VA Benefits',
         other2: 'Other'
@@ -745,15 +745,15 @@
 
       // HELOC
       heloc: {
-        total: 300000,
+        total: 400000,
         drawn: 0,
         rate: 7.625,
-        drawPeriodYears: 2,
+        drawPeriodYears: 0,
         repaymentYears: 20,
-        monthlyPayment: 2347.13,
+        monthlyPayment: 3253.00,
         lender: 'RenoFi Fixed Rate HELOC',
         type: 'Fixed Rate',
-        status: 'Pursuing'
+        status: 'Active'
       },
 
       // Renovation budget
@@ -898,14 +898,14 @@
           name: 'RenoFi HELOC Terms',
           uploadDate: '02/05/2026',
           type: 'Loan Terms',
-          summary: '$300,000 Fixed Rate HELOC at 7.625%, 2yr draw / 20yr repayment, Est. $2,347.13/mo at full draw, Status: Pursuing',
+          summary: '$400,000 Fixed Rate HELOC at 7.625%, 20yr fixed, Est. $3,253.00/mo, Status: Active',
           extractedData: {
             lender: 'RenoFi',
-            amount: 300000,
+            amount: 400000,
             rate: 7.625,
-            drawPeriod: 2,
+            drawPeriod: 0,
             repayment: 20,
-            monthlyPayment: 2347.13,
+            monthlyPayment: 3253.00,
             type: 'Fixed Rate'
           }
         },
@@ -1023,7 +1023,7 @@
       document.getElementById('heloc-rate-display').textContent = `${data.heloc.rate}%`;
       document.getElementById('heloc-interest-display').textContent = `Current Monthly Interest: ${formatCurrency(getHelocInterest())}`;
       document.getElementById('heloc-lender-display').textContent = data.heloc.lender || 'Not set';
-      document.getElementById('heloc-draw-period-display').textContent = `${data.heloc.drawPeriodYears || 2} years`;
+      document.getElementById('heloc-draw-period-display').textContent = `${data.heloc.drawPeriodYears || 0} years`;
       document.getElementById('heloc-repay-display').textContent = `${data.heloc.repaymentYears || 20} years`;
       const estPayment = data.heloc.monthlyPayment || 0;
       const drawRatio = data.heloc.total > 0 ? data.heloc.drawn / data.heloc.total : 0;
@@ -1615,7 +1615,7 @@
       document.getElementById('setting-heloc-rate').value = data.heloc.rate;
       document.getElementById('setting-heloc-draw-period').value = data.heloc.drawPeriodYears;
       document.getElementById('setting-heloc-repay-period').value = data.heloc.repaymentYears || 20;
-      document.getElementById('setting-heloc-payment').value = data.heloc.monthlyPayment || 2347.13;
+      document.getElementById('setting-heloc-payment').value = data.heloc.monthlyPayment || 3253.00;
       // Load saved Sheets URL
       const savedSheetsUrl = localStorage.getItem(SHEETS_URL_KEY) || '';
       document.getElementById('setting-sheets-url').value = savedSheetsUrl;
@@ -1779,11 +1779,11 @@
     }
 
     function saveHelocSettings() {
-      data.heloc.total = parseFloat(document.getElementById('setting-heloc-total').value) || 300000;
+      data.heloc.total = parseFloat(document.getElementById('setting-heloc-total').value) || 400000;
       data.heloc.rate = parseFloat(document.getElementById('setting-heloc-rate').value) || 7.625;
-      data.heloc.drawPeriodYears = parseFloat(document.getElementById('setting-heloc-draw-period').value) || 2;
+      data.heloc.drawPeriodYears = parseFloat(document.getElementById('setting-heloc-draw-period').value) || 0;
       data.heloc.repaymentYears = parseFloat(document.getElementById('setting-heloc-repay-period').value) || 20;
-      data.heloc.monthlyPayment = parseFloat(document.getElementById('setting-heloc-payment').value) || 2347.13;
+      data.heloc.monthlyPayment = parseFloat(document.getElementById('setting-heloc-payment').value) || 3253.00;
       saveData();
       updateAll();
       alert('HELOC settings saved!');
@@ -2070,8 +2070,8 @@
       const amazon = data.creditCards.find(c => c.name.toLowerCase().includes('amazon'));
       
       // HELOC affordability
-      const helocPayment = data.heloc.monthlyPayment || 2347.13;
-      const helocDrawPeriod = data.heloc.drawPeriodYears || 2;
+      const helocPayment = data.heloc.monthlyPayment || 3253.00;
+      const helocDrawPeriod = data.heloc.drawPeriodYears || 0;
       const helocRepayment = data.heloc.repaymentYears || 20;
       const helocRate = data.heloc.rate || 7.625;
       const helocLender = data.heloc.lender || 'RenoFi';
@@ -2531,7 +2531,7 @@
         r += `• Draw Period: ${helocDrawPeriod} years\n`;
         r += `• Repayment Period: ${helocRepayment} years\n`;
         r += `• Est. Monthly Payment (full draw): ${formatCurrency(helocPayment)}\n`;
-        r += `• Status: ${data.heloc.status || 'Pursuing'}\n\n`;
+        r += `• Status: ${data.heloc.status || 'Active'}\n\n`;
         r += `• Amount Drawn: ${formatCurrency(data.heloc.drawn)}\n`;
         r += `• Remaining to Draw: ${formatCurrency(helocRemaining)}\n`;
         r += `• Current Monthly Interest: ${formatCurrency(helocInterest)}\n\n`;
